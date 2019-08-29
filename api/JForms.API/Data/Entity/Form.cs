@@ -8,7 +8,7 @@ namespace JForms.API.Data.Entity
 {
     public class Form
     {
-
+        //primary key
         public int FormId { get; set; }
 
         //user id
@@ -24,7 +24,7 @@ namespace JForms.API.Data.Entity
         public ICollection<FormField> Fields { get; set; }
 
         //form submissions
-        public FormSubmission Submissions { get; set; }
+        public ICollection<FormSubmission> Submissions { get; set; }
 
         //dates?
 

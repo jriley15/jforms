@@ -33,9 +33,8 @@ namespace JForms
 
             services.AddAutoMapper(typeof(MappingProfile));
 
-            services.AddDbContext<API.Data.DbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("postgres")));
-
-        
+            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("postgres")));
+       
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
