@@ -1,12 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
@@ -15,6 +11,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.0-preview8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JForms.Application\JForms.Application.csproj" />
+    <ProjectReference Include="..\JForms.Data\JForms.Data.csproj" />
   </ItemGroup>
 
 </Project>

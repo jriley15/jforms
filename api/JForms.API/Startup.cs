@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using JForms.API.Data;
 using JForms.API.Profiles;
+using JForms.Application.Profiles;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,7 +33,7 @@ namespace JForms
 
             services.AddAutoMapper(typeof(MappingProfile));
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("postgres")));
+            services.AddDbContext<JForms.Data.DbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("postgres")));
        
         }
 

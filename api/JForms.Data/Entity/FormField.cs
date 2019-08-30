@@ -1,10 +1,10 @@
-﻿using JForms.API.Data.Local;
+﻿using JForms.Data.Local;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JForms.API.Data.Entity
+namespace JForms.Data.Entity
 {
     public class FormField
     {
