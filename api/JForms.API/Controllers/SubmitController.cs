@@ -6,16 +6,30 @@ using System.Threading.Tasks;
 
 namespace JForms.API.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class SubmitController : ControllerBase
+
+
+
+    /*
+     * 
+     * 
+     * Either configure routing to let form id's act as controller actions
+     * or
+     * have two seperate actions here - one for json body posts and one for form posts (send form id in model)
+     * 
+     * 
+     * 
+     */
+
+
+    public class SubmitController : BaseController
     {
 
 
         //Form submit action
         [HttpPost]
-        public async Task<IActionResult> SubmitForm()
+        public async Task<IActionResult> SubmitForm(object submission)
         {
+
 
             return Ok();
 
