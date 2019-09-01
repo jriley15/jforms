@@ -8,7 +8,7 @@ namespace JForms.API.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
-    public class BaseController : Controller
+    public class BaseController : ControllerBase
     {
 
 

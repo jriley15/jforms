@@ -10,6 +10,7 @@ namespace JForms.API.Controllers
     {
 
 
+        //create form here from UI for owners
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -18,6 +19,7 @@ namespace JForms.API.Controllers
 
         }
 
+        //form data fetch from UI here for user submissions / owner editing
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -27,6 +29,18 @@ namespace JForms.API.Controllers
 
         }
 
+
+        //form data search here for owners to display in list on UI
+        [HttpGet]
+        public async Task<IActionResult> Search()
+        {
+
+            return Ok();
+
+        }
+
+
+        //form data update here for owners
         [HttpGet]
         public async Task<IActionResult> Update()
         {
@@ -35,6 +49,7 @@ namespace JForms.API.Controllers
 
         }
 
+        //form data delete here for owners
         [HttpGet]
         public async Task<IActionResult> Delete()
         {
