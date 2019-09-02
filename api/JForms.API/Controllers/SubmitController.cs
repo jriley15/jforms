@@ -13,7 +13,9 @@ namespace JForms.API.Controllers
      * 
      * 
      * Either configure routing to let form id's act as controller actions
+     * 
      * or
+     * 
      * have two seperate actions here - one for json body posts and one for form posts (send form id in model)
      * 
      * 
@@ -21,14 +23,15 @@ namespace JForms.API.Controllers
      */
 
 
-    public class SubmitController : BaseController
+    [Controller]
+    [Route("[controller]")]
+    public class SubmitController : Controller
     {
 
-
-        //Form submit action
-        [HttpPost]
-        public async Task<IActionResult> SubmitForm(object submission)
+        [Route("{formId}")]
+        public async Task<IActionResult> Submit([FromRoute] int formId, [FromBody] object body, [FromForm] object form)
         {
+    
 
 
             return Ok();
