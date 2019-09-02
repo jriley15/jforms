@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using JForms.API.Attributes;
+using JForms.Application.Services;
+using JForms.Data.Dto;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using JForms.API.Extensions;
 
 namespace JForms.API.Controllers
 {
@@ -23,21 +24,47 @@ namespace JForms.API.Controllers
      */
 
 
-    [Controller]
+    [ApiController]
     [Route("[controller]")]
-    public class SubmitController : Controller
+    public class SubmitController : ControllerBase
     {
 
-        [Route("{formId}")]
-        public async Task<IActionResult> Submit([FromRoute] int formId, [FromBody] object body, [FromForm] object form)
+
+        private readonly ISubmitService _submitService;
+
+        public SubmitController(ISubmitService submitService)
         {
-    
+            _submitService = submitService;
+        }
+
+        [HttpPost]
+        [FormContentType]
+        [Route("{formId}")]
+        public async Task<IActionResult> SubmitFromForm([FromRoute] int formId, [FromForm] TestDto testForm)
+        {
 
 
-            return Ok();
+            //check if submission is json body or form
+
+            //call service method
+
+            return this.GenerateResponse(_submitService.SubmitForm(null));
 
         }
 
+        [HttpPost]
+        [Route("{formId}")]
+        public async Task<IActionResult> SubmitFromBody([FromRoute] int formId, [FromBody] TestDto testBody)
+        {
 
+
+            //check if submission is json body or form
+
+            //call service method
+
+
+            return this.GenerateResponse(_submitService.SubmitForm(null));
+
+        }
     }
 }

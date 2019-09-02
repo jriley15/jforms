@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
 namespace JForms.Data.Dto
 {
-    public class FormDto
+    public class SubmitDto
     {
-
-
 
 
     }

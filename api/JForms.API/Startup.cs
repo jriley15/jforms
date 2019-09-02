@@ -1,5 +1,6 @@
 using AutoMapper;
 using JForms.Application.Profiles;
+using JForms.Application.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,9 @@ namespace JForms
             services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddDbContext<JForms.Data.DbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("postgres")));
-       
+
+            services.AddSingleton<ISubmitService, SubmitService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
