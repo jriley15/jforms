@@ -1,5 +1,8 @@
-﻿using JForms.Data.Dto;
+﻿using AutoMapper;
+using JForms.Data;
+using JForms.Data.Dto;
 using JForms.Data.Dto.Form;
+using JForms.Data.Entity;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,9 +30,28 @@ namespace JForms.Application.Services
     public class FormService : IFormService
     {
 
-        public Task<Response> Create(CreateFormDto form)
+        private readonly DbContext _dbContext;
+
+        private readonly IMapper _mapper;
+
+        public FormService(DbContext dbContext, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
+            _mapper = mapper;
+        }
+
+
+        public async Task<Response> Create(CreateFormDto form)
+        {
+            var response = new Response();
+
+            var formEntity = _mapper.Map<Form>(form);
+
+            var affectedRows = await _dbContext.Forms.AddAsync(formEntity);
+
+            response.Success = true;
+
+            return response;
         }
 
         public Task<GetFormResponseDto> Get(int formId)

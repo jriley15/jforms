@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using JForms.Data.Dto.Form;
+using JForms.Data.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,7 @@ namespace JForms.Application.Profiles
         public MappingProfile()
         {
 
-
+            CreateMap<CreateFormDto, Form>();
         }
     }
 }
