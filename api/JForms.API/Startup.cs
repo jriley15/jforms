@@ -28,7 +28,8 @@ namespace JForms
 
             services.AddDbContext<JForms.Data.DbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("postgres")));
 
-            services.AddSingleton<ISubmitService, SubmitService>();
+            services.AddTransient<ISubmitService, SubmitService>();
+            services.AddTransient<IFormService, FormService>();
 
         }
 

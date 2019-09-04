@@ -40,7 +40,7 @@ namespace JForms.API.Controllers
         [HttpPost]
         [FormContentType]
         [Route("{formId}")]
-        public async Task<IActionResult> SubmitFromForm([FromRoute] int formId, [FromForm] TestDto testForm)
+        public async Task<IActionResult> SubmitFromForm([FromRoute] int formId, [FromForm] SubmitDto testForm)
         {
 
 
@@ -54,7 +54,7 @@ namespace JForms.API.Controllers
 
         [HttpPost]
         [Route("{formId}")]
-        public async Task<IActionResult> SubmitFromBody([FromRoute] int formId, [FromBody] TestDto testBody)
+        public async Task<IActionResult> SubmitFromBody([FromRoute] int formId, [FromBody] SubmitDto testBody)
         {
 
 

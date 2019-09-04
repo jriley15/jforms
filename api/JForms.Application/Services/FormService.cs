@@ -1,25 +1,55 @@
-﻿using System;
+﻿using JForms.Data.Dto;
+using JForms.Data.Dto.Form;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace JForms.Application.Services
 {
-    class FormService
+
+    public interface IFormService {
+
+
+        Task<Response> Create(CreateFormDto form);
+
+        Task<GetFormResponseDto> Get(int formId);
+
+        Task<SearchFormResponseDto> Search(SearchFormDto search);
+
+        Task<Response> Update(CreateFormDto form);
+
+        Task Delete(int formId);
+
+    
+    }
+
+    public class FormService : IFormService
     {
 
+        public Task<Response> Create(CreateFormDto form)
+        {
+            throw new NotImplementedException();
+        }
 
-        //create
+        public Task<GetFormResponseDto> Get(int formId)
+        {
+            throw new NotImplementedException();
+        }
 
-        //get
+        public Task<SearchFormResponseDto> Search(SearchFormDto search)
+        {
+            throw new NotImplementedException();
+        }
 
-        //search
+        public Task<Response> Update(CreateFormDto form)
+        {
+            throw new NotImplementedException();
+        }
 
-        //update
-
-        //delete
-
-
-
-
+        public Task Delete(int formId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

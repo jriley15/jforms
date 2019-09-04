@@ -3,55 +3,60 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JForms.API.Extensions;
+using JForms.Data.Dto.Form;
+using JForms.Application.Services;
 
 namespace JForms.API.Controllers
 {
-    public class FormController : BaseController
+    [ApiController]
+    [Route("[controller]/[action]")]
+    public class FormController : ControllerBase
     {
+
+        private readonly IFormService _formService;
+
+        public FormController(IFormService formService)
+        {
+            _formService = formService;
+        }
 
 
         //create form here from UI for owners
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(CreateFormDto form)
         {
-
-            return Ok();
-
+            return this.GenerateResponse(await _formService.Create(form));
         }
 
         //form data fetch from UI here for user submissions / owner editing
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(int formId)
         {
-            
-
-            return Ok();
-
+            return this.GenerateResponse(await _formService.Get(formId));
         }
 
 
         //form data search here for owners to display in list on UI
         [HttpGet]
-        public async Task<IActionResult> Search()
+        public async Task<IActionResult> Search(SearchFormDto search)
         {
-
-            return Ok();
-
+            return this.GenerateResponse(await _formService.Search(search));
         }
 
 
         //form data update here for owners
         [HttpGet]
-        public async Task<IActionResult> Update()
+        public async Task<IActionResult> Update(CreateFormDto form)
         {
 
-            return Ok();
+            return this.GenerateResponse(await _formService.Update(form));
 
         }
 
         //form data delete here for owners
         [HttpGet]
-        public async Task<IActionResult> Delete()
+        public async Task<IActionResult> Delete(int formId)
         {
 
             return Ok();
