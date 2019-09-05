@@ -4,6 +4,7 @@ using JForms.Data.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using JForms.API.Extensions;
+using System.Collections.Generic;
 
 namespace JForms.API.Controllers
 {
@@ -40,7 +41,7 @@ namespace JForms.API.Controllers
         [HttpPost]
         [FormContentType]
         [Route("{formId}")]
-        public async Task<IActionResult> SubmitFromForm([FromRoute] int formId, [FromForm] SubmitDto testForm)
+        public async Task<IActionResult> SubmitFromForm([FromRoute] int formId, [FromForm] Dictionary<string, string> form)
         {
 
 
@@ -48,13 +49,13 @@ namespace JForms.API.Controllers
 
             //call service method
 
-            return this.GenerateResponse(_submitService.SubmitForm(null));
+            return this.GenerateResponse(await _submitService.SubmitForm(formId, form));
 
         }
 
         [HttpPost]
         [Route("{formId}")]
-        public async Task<IActionResult> SubmitFromBody([FromRoute] int formId, [FromBody] SubmitDto testBody)
+        public async Task<IActionResult> SubmitFromBody([FromRoute] int formId, [FromBody] Dictionary<string, string> body)
         {
 
 
@@ -63,7 +64,7 @@ namespace JForms.API.Controllers
             //call service method
 
 
-            return this.GenerateResponse(_submitService.SubmitForm(null));
+            return this.GenerateResponse(await _submitService.SubmitForm(formId, body));
 
         }
     }

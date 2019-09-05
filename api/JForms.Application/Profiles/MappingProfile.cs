@@ -14,6 +14,7 @@ namespace JForms.Application.Profiles
         {
 
             CreateMap<CreateFormDto, Form>();
+            CreateMap<FormFieldDto, FormField>();
         }
     }
 }

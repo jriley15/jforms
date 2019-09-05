@@ -15,7 +15,7 @@ namespace JForms.Data.Entity
         public User User { get; set; }
 
         //name
-        public int Name { get; set; }
+        public string Name { get; set; }
 
         //form type (post form, json body form)
         public FormType Type { get; set; }
@@ -27,6 +27,12 @@ namespace JForms.Data.Entity
         public ICollection<FormSubmission> Submissions { get; set; }
 
         //dates?
+
+        public Form()
+        {
+            Submissions = new List<FormSubmission>();
+            Fields = new List<FormField>();
+        }
 
     }
 }

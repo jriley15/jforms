@@ -26,7 +26,7 @@ namespace JForms.Data.Migrations
                     FormId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(nullable: true),
-                    Name = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
                     Type = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -88,6 +88,7 @@ namespace JForms.Data.Migrations
                     FormSubmissionValueId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     SubmissionFormSubmissionId = table.Column<int>(nullable: true),
+                    Value = table.Column<string>(nullable: true),
                     FieldFormFieldId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>

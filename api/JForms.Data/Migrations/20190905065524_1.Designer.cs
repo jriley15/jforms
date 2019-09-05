@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JForms.Data.Migrations
 {
     [DbContext(typeof(DbContext))]
-    [Migration("20190830023705_1")]
+    [Migration("20190905065524_1")]
     partial class _1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,8 +28,8 @@ namespace JForms.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("Name")
-                        .HasColumnType("integer");
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
@@ -99,6 +99,9 @@ namespace JForms.Data.Migrations
 
                     b.Property<int?>("SubmissionFormSubmissionId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
 
                     b.HasKey("FormSubmissionValueId");
 

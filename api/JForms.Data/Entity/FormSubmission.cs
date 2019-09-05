@@ -21,5 +21,10 @@ namespace JForms.Data.Entity
         //submission values
         public ICollection<FormSubmissionValue> Values { get; set; }
 
+        public FormSubmission()
+        {
+            Values = new List<FormSubmissionValue>();
+        }
+
     }
 }

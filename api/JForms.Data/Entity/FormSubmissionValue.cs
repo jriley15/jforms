@@ -14,6 +14,9 @@ namespace JForms.Data.Entity
         //foreign key to parent form submission
         public FormSubmission Submission { get; set; }
 
+        //value
+        public string Value { get; set; }
+
 
         //foreign key to relating field that this value belongs to
         public FormField Field { get; set; }

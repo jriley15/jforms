@@ -47,7 +47,9 @@ namespace JForms.Application.Services
 
             var formEntity = _mapper.Map<Form>(form);
 
-            var affectedRows = await _dbContext.Forms.AddAsync(formEntity);
+            await _dbContext.Forms.AddAsync(formEntity);
+
+            var affectedRows = await _dbContext.SaveChangesAsync();
 
             response.Success = true;
 

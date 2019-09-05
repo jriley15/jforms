@@ -9,7 +9,7 @@ namespace JForms.Data.Dto.Form
     public class CreateFormDto
     {
 
-        public int FormID { get; set; }
+        public int FormId { get; set; }
 
         public string Name { get; set; }
 

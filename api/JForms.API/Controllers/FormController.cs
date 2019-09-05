@@ -23,7 +23,7 @@ namespace JForms.API.Controllers
 
 
         //create form here from UI for owners
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Create(CreateFormDto form)
         {
             return this.GenerateResponse(await _formService.Create(form));
@@ -38,7 +38,7 @@ namespace JForms.API.Controllers
 
 
         //form data search here for owners to display in list on UI
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Search(SearchFormDto search)
         {
             return this.GenerateResponse(await _formService.Search(search));
@@ -46,7 +46,7 @@ namespace JForms.API.Controllers
 
 
         //form data update here for owners
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Update(CreateFormDto form)
         {
 
@@ -55,7 +55,7 @@ namespace JForms.API.Controllers
         }
 
         //form data delete here for owners
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Delete(int formId)
         {
 
