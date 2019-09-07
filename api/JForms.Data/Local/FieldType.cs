@@ -9,6 +9,7 @@ namespace JForms.Data.Local
     {
         String,
         Number,
-        Date //?
+        Date,
+        RadioButton
     }
 }
