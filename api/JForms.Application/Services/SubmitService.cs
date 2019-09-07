@@ -43,6 +43,9 @@ namespace JForms.Application.Services
             //get form we're creating a submission for
             var formEntity = await _dbContext.Forms.Include(f => f.Fields).SingleOrDefaultAsync(f => f.FormId == formId);
 
+
+            //TODO: check origin from http headers with allowed origins from form
+
             //create a new submission entity
             var submissionEntity = new FormSubmission();
 

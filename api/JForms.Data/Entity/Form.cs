@@ -26,12 +26,17 @@ namespace JForms.Data.Entity
         //form submissions
         public ICollection<FormSubmission> Submissions { get; set; }
 
-        //dates?
+        //allowed origins
+        public ICollection<FormOrigin> Origins { get; set; }
+
+        //timestamps?
+
 
         public Form()
         {
             Submissions = new List<FormSubmission>();
             Fields = new List<FormField>();
+            Origins = new List<FormOrigin>();
         }
 
     }
