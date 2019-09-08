@@ -3,15 +3,17 @@ using System;
 using JForms.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace JForms.Data.Migrations
 {
     [DbContext(typeof(DbContext))]
-    partial class DbContextModelSnapshot : ModelSnapshot
+    [Migration("20190908013715_3")]
+    partial class _3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,38 +107,6 @@ namespace JForms.Data.Migrations
                     b.HasKey("FormFieldTypeId");
 
                     b.ToTable("FormFieldType");
-
-                    b.HasData(
-                        new
-                        {
-                            FormFieldTypeId = 1,
-                            Value = "String"
-                        },
-                        new
-                        {
-                            FormFieldTypeId = 2,
-                            Value = "Number"
-                        },
-                        new
-                        {
-                            FormFieldTypeId = 3,
-                            Value = "Date"
-                        },
-                        new
-                        {
-                            FormFieldTypeId = 4,
-                            Value = "RadioButton"
-                        },
-                        new
-                        {
-                            FormFieldTypeId = 5,
-                            Value = "DropDown"
-                        },
-                        new
-                        {
-                            FormFieldTypeId = 6,
-                            Value = "MultiSelect"
-                        });
                 });
 
             modelBuilder.Entity("JForms.Data.Entity.FormFieldTypeRuleType", b =>

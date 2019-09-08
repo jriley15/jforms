@@ -12,15 +12,17 @@ namespace JForms.Data.Entity
         //primary key
         public int FormFieldId { get; set; }
 
-        //foreign key to parent form
-        public Form Form { get; set; }
-
         //display name
         public string Name { get; set; }
 
         //field type
-        public FieldType Type { get; set; }
+        public FormFieldType Type { get; set; }
 
+        //options for radio buttons, multi-selects, and drop-downs
+        public ICollection<FormFieldOption> Options { get; set; }
+
+        //foreign key to this fields validation 
+        public FormFieldValidation Validation { get; set; }
 
 
     }

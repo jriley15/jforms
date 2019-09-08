@@ -7,9 +7,11 @@ namespace JForms.Data.Local
 {
     public enum FieldType
     {
-        String,
+        String = 1,
         Number,
         Date,
-        RadioButton
+        RadioButton,
+        DropDown,
+        MultiSelect
     }
 }
