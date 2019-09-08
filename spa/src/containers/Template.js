@@ -8,7 +8,12 @@ export default function Template() {
     <Segment
       inverted
       vertical
-      style={{ minHeight: "100vh", backgroundColor: "#303030", padding: 0 }}
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#303030",
+        paddingTop: 0,
+        paddingBottom: 64
+      }}
     >
       <Routes>
         <NavBar />

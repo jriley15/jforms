@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import useCollapse from "react-collapsed";
 import styled from "styled-components";
 import { Icon } from "semantic-ui-react";
@@ -8,9 +8,8 @@ const Indent = styled.div`
 `;
 
 export default function Collapsible({ header, children }) {
-  const { getCollapseProps, getToggleProps, isOpen } = useCollapse({
-    defaultOpen: true
-  });
+  const [isOpen, setOpen] = useState(true);
+  const { getCollapseProps, getToggleProps } = useCollapse({ isOpen });
 
   return (
     <Indent>
@@ -18,10 +17,11 @@ export default function Collapsible({ header, children }) {
         style={{
           display: "flex",
           flexDirection: "row",
-          paddingBottom: "8px"
+          paddingBottom: "16px"
         }}
+        onClick={() => setOpen(oldOpen => !oldOpen)}
       >
-        <Icon name={isOpen ? "minus" : "plus"} {...getToggleProps()} />
+        <Icon name={isOpen ? "minus" : "plus"} />
         {header}
       </div>
 

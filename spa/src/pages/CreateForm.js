@@ -51,7 +51,6 @@ export default function CreateForm() {
     const field = {
       name: "",
       formFieldTypeId: 0,
-      collapsed: false,
       validation: {
         type: 0,
         script: "",
@@ -73,8 +72,7 @@ export default function CreateForm() {
     const fields = [...formFields];
     fields[fieldIndex].validation.rules.push({
       type: 0,
-      value: "",
-      collapsed: false
+      value: ""
     });
     setFormFields(fields);
   };
@@ -237,7 +235,9 @@ export default function CreateForm() {
                     </p>
                   }
                 >
-                  <Indent>
+                  <Indent
+                    style={{ borderLeft: "1px solid white", marginLeft: "8px" }}
+                  >
                     <FormField>
                       <label>Field Name</label>
                       <input placeholder="Field Name" />
@@ -296,28 +296,17 @@ export default function CreateForm() {
                         <>
                           {formField.validation.rules.map((rule, ruleIndex) => (
                             <RuleContainer key={ruleIndex}>
-                              <Indent>
-                                <p style={{ fontSize: "1.1em" }}>
-                                  <Icon
-                                    name={
-                                      formField.validation.rules[ruleIndex]
-                                        .collapsed
-                                        ? "plus"
-                                        : "minus"
-                                    }
-                                    onClick={() =>
-                                      collapseRule(fieldIndex, ruleIndex)
-                                    }
-                                  />
-                                  <b>Rule {ruleIndex + 1}</b>
-                                </p>
+                              <Collapsible
+                                header={
+                                  <p style={{ fontSize: "1.1em" }}>
+                                    <b>Rule {ruleIndex + 1}</b>
+                                  </p>
+                                }
+                              >
                                 <Indent
                                   style={{
-                                    display: formField.validation.rules[
-                                      ruleIndex
-                                    ].collapsed
-                                      ? "none"
-                                      : "block"
+                                    borderLeft: "1px solid white",
+                                    marginLeft: "8px"
                                   }}
                                 >
                                   <FormSelect
@@ -345,18 +334,19 @@ export default function CreateForm() {
                                     </FormField>
                                   )}
                                 </Indent>
-                                {ruleIndex ===
-                                  formField.validation.rules.length - 1 && (
-                                  <div style={{ marginTop: 16 }}>
-                                    <Button
-                                      color="yellow"
-                                      style={{ marginTop: 16 }}
-                                      onClick={() => addRule(fieldIndex)}
-                                      inverted
-                                    >
-                                      <Icon name="add circle" />
-                                      Add Rule
-                                    </Button>
+                              </Collapsible>
+                              {ruleIndex ===
+                                formField.validation.rules.length - 1 && (
+                                <div style={{ marginTop: 32 }}>
+                                  <Button
+                                    color="yellow"
+                                    onClick={() => addRule(fieldIndex)}
+                                    inverted
+                                  >
+                                    <Icon name="add circle" />
+                                    Add Rule
+                                  </Button>
+                                  {formField.validation.rules.length > 1 && (
                                     <Button
                                       inverted
                                       color="red"
@@ -364,9 +354,9 @@ export default function CreateForm() {
                                     >
                                       <Icon name="x" /> Remove
                                     </Button>
-                                  </div>
-                                )}
-                              </Indent>
+                                  )}
+                                </div>
+                              )}
                             </RuleContainer>
                           ))}
                         </>
@@ -374,32 +364,39 @@ export default function CreateForm() {
                   </Indent>
                 </Collapsible>
                 {fieldIndex === formFields.length - 1 && (
-                  <div style={{ marginTop: 16 }}>
+                  <div style={{ marginTop: 32 }}>
                     <Button color="blue" onClick={addFormField} inverted>
                       <Icon name="add circle" />
                       Add Field
                     </Button>
-                    <Button inverted color="red" onClick={removeFormField}>
-                      <Icon name="x" /> Remove
-                    </Button>
+                    {formFields.length > 1 && (
+                      <Button inverted color="red" onClick={removeFormField}>
+                        <Icon name="x" /> Remove
+                      </Button>
+                    )}
                   </div>
                 )}
               </FieldContainer>
             ))}
           </Group>
         )}
-      </Indent>
+        {formFields.length > 0 && (
+          <Group>
+            <p style={{ fontSize: "1.33em" }}>
+              <b>Step 4.</b> All Done
+            </p>
 
-      {formFields.length > 0 && (
-        <div style={{ marginTop: 32 }}>
-          <Button color="green" inverted size="large">
-            Submit Form
-          </Button>
-          <Button color="grey" inverted size="large">
-            Clear
-          </Button>
-        </div>
-      )}
+            <Indent>
+              <Button color="green" inverted size="large">
+                Submit Form
+              </Button>
+              <Button color="grey" inverted size="large">
+                Clear
+              </Button>
+            </Indent>
+          </Group>
+        )}
+      </Indent>
     </Form>
   );
 }
