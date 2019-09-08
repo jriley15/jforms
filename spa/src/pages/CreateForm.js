@@ -10,6 +10,7 @@ import {
 import styled from "styled-components";
 import Axios from "axios";
 import { apiUrl } from "../config";
+import Collapsible from "../components/common/Collapse";
 
 const FormField = styled(Form.Field)`
   max-width: 300px;
@@ -43,6 +44,8 @@ export default function CreateForm() {
   const [formFieldTypes, setFormFieldTypes] = useState([]);
   const [formFields, setFormFields] = useState([]);
   const [validationTypes, setValidationTypes] = useState([]);
+  const [formName, setFormName] = useState("");
+  const [formType, setFormType] = useState(0);
 
   const addFormField = () => {
     const field = {
@@ -58,6 +61,14 @@ export default function CreateForm() {
     setFormFields(formFields => [...formFields, field]);
   };
 
+  const removeFormField = () => {
+    if (formFields.length > 1) {
+      const fields = [...formFields];
+      fields.splice(fields.length - 1, 1);
+      setFormFields(fields);
+    }
+  };
+
   const addRule = fieldIndex => {
     const fields = [...formFields];
     fields[fieldIndex].validation.rules.push({
@@ -65,6 +76,15 @@ export default function CreateForm() {
       value: "",
       collapsed: false
     });
+    setFormFields(fields);
+  };
+
+  const removeRule = fieldIndex => {
+    const fields = [...formFields];
+    fields[fieldIndex].validation.rules.splice(
+      fields[fieldIndex].validation.rules.length - 1,
+      1
+    );
     setFormFields(fields);
   };
 
@@ -86,9 +106,9 @@ export default function CreateForm() {
     setFormFields(fields);
   };
 
-  const fieldTypeChange = fieldIndex => (e, type) => {
+  const fieldTypeChange = fieldIndex => (e, { value }) => {
     const fields = [...formFields];
-    fields[fieldIndex].formFieldTypeId = type.value;
+    fields[fieldIndex].formFieldTypeId = value;
     setFormFields(fields);
     resetRules(fieldIndex);
     resetValidationType(fieldIndex);
@@ -108,10 +128,10 @@ export default function CreateForm() {
     setFormFields(fields);
   };
 
-  const validationTypeChange = fieldIndex => (e, type) => {
-    setValidationType(fieldIndex, type.value);
+  const validationTypeChange = fieldIndex => (e, { value }) => {
+    setValidationType(fieldIndex, value);
 
-    if (type.value === 1) {
+    if (value === 1) {
       resetRules(fieldIndex);
       addRule(fieldIndex);
       //get validation types for field
@@ -137,10 +157,19 @@ export default function CreateForm() {
     }
   };
 
-  const ruleTypeChange = (fieldIndex, ruleIndex) => (e, type) => {
+  const ruleTypeChange = (fieldIndex, ruleIndex) => (e, { value }) => {
     const fields = [...formFields];
-    fields[fieldIndex].validation.rules[ruleIndex].type = type.value;
+    fields[fieldIndex].validation.rules[ruleIndex].type = value;
     setFormFields(fields);
+  };
+
+  const formNameChange = (e, { value }) => {
+    setFormName(value);
+  };
+
+  const formTypeChange = (e, { value }) => {
+    setFormType(value);
+    addFormField();
   };
 
   useEffect(() => {
@@ -150,8 +179,6 @@ export default function CreateForm() {
       })
       .catch(error => {});
 
-    addFormField();
-
     return () => {};
   }, []);
 
@@ -160,183 +187,219 @@ export default function CreateForm() {
       <Header as="h3" style={{ fontSize: "2em" }} inverted>
         Create a new Form
       </Header>
-      <Group>
-        <p style={{ fontSize: "1.33em" }}>
-          <b>Step 1.</b> Select a name for your form
-        </p>
-        <Indent>
-          <FormField>
-            <label>Form Name</label>
-            <input placeholder="Form Name" />
-          </FormField>
-        </Indent>
-      </Group>
-      <Group>
-        <p style={{ fontSize: "1.33em" }}>
-          <b>Step 2.</b> Select a type of form
-        </p>
-        <Indent>
-          <FormSelect
-            fluid
-            label="Form Type"
-            options={[
-              { key: 0, text: "JSON Body Post", value: "0" },
-              { key: 1, text: "HTML Form Post", value: "0" }
-            ]}
-            placeholder="Form Type"
-          />
-        </Indent>
-      </Group>
-      <Group>
-        <p style={{ fontSize: "1.33em" }}>
-          <b>Step 3.</b> Create & Configure your fields
-        </p>
-        {formFields.map((formField, fieldIndex) => (
-          <FieldContainer>
-            <Indent key={fieldIndex}>
-              <p style={{ fontSize: "1.16em" }}>
-                <Icon
-                  name={formField.collapsed ? "plus" : "minus"}
-                  onClick={() => collapseField(fieldIndex)}
-                />
-                <b>Field {fieldIndex + 1}</b>
-              </p>
-              <Indent
-                style={{
-                  display: formField.collapsed ? "none" : "block"
-                }}
-              >
-                <FormField>
-                  <label>Field Name</label>
-                  <input placeholder="Field Name" />
-                </FormField>
-
-                <FormSelect
-                  fluid
-                  label="Field Type"
-                  onChange={fieldTypeChange(fieldIndex)}
-                  options={formFieldTypes.map((fieldType, fieldTypeIndex) => ({
-                    key: fieldTypeIndex,
-                    text: fieldType.name,
-                    value: fieldType.formFieldTypeId
-                  }))}
-                  placeholder="Field Type"
-                />
-
-                {formField.formFieldTypeId > 0 && (
-                  <FormSelect
-                    fluid
-                    label="Validation Type"
-                    onChange={validationTypeChange(fieldIndex)}
-                    value={formField.validation.type}
-                    options={[
-                      {
-                        key: 0,
-                        text: "None",
-                        value: 0
-                      },
-                      {
-                        key: 1,
-                        text: "Basic Rules",
-                        value: 1
-                      },
-                      {
-                        key: 2,
-                        text: "Custom Javascript",
-                        value: 2
-                      }
-                    ]}
-                    placeholder="Validation Type"
-                  />
-                )}
-                {formField.validation.type === 2 && (
-                  <Indent>
-                    <FormTextArea
-                      label="Custom validation script"
-                      placeholder="JavaScript"
-                    ></FormTextArea>
-                  </Indent>
-                )}
-                {formField.validation.type === 1 &&
-                  validationTypes[formField.formFieldTypeId] && (
-                    <>
-                      {formField.validation.rules.map((rule, ruleIndex) => (
-                        <RuleContainer>
-                          <Indent key={ruleIndex}>
-                            <p style={{ fontSize: "1.1em" }}>
-                              <Icon
-                                name={
-                                  formField.validation.rules[ruleIndex]
-                                    .collapsed
-                                    ? "plus"
-                                    : "minus"
-                                }
-                                onClick={() =>
-                                  collapseRule(fieldIndex, ruleIndex)
-                                }
-                              />
-                              <b>Rule {ruleIndex + 1}</b>
-                            </p>
-                            <Indent
-                              style={{
-                                display: formField.validation.rules[ruleIndex]
-                                  .collapsed
-                                  ? "none"
-                                  : "block"
-                              }}
-                            >
-                              <FormSelect
-                                fluid
-                                label="Rule Type"
-                                onChange={ruleTypeChange(fieldIndex, ruleIndex)}
-                                options={validationTypes[
-                                  formField.formFieldTypeId
-                                ].map((validationType, index) => ({
-                                  key: index,
-                                  text: validationType.name,
-                                  value: validationType.formValidationRuleTypeId
-                                }))}
-                                placeholder="Rule Type"
-                              />
-                              {formField.validation.rules[ruleIndex].type >
-                                1 && (
-                                <FormField>
-                                  <label>Rule Value</label>
-                                  <input placeholder="Value" />
-                                </FormField>
-                              )}
-                            </Indent>
-                            {ruleIndex ===
-                              formField.validation.rules.length - 1 && (
-                              <Button
-                                color="green"
-                                style={{ marginTop: 16 }}
-                                onClick={() => addRule(fieldIndex)}
-                              >
-                                <Icon name="add circle" />
-                                Add Rule
-                              </Button>
-                            )}
-                          </Indent>
-                        </RuleContainer>
-                      ))}
-                    </>
-                  )}
-              </Indent>
-              {fieldIndex === formFields.length - 1 && (
-                <Button
-                  color="blue"
-                  style={{ marginTop: 16 }}
-                  onClick={addFormField}
-                >
-                  <Icon name="add circle" />
-                  Add Field
-                </Button>
-              )}
+      <Indent>
+        <Group>
+          <p style={{ fontSize: "1.33em" }}>
+            <b>Step 1.</b> Select a name for your form
+          </p>
+          <Indent>
+            <FormField>
+              <Form.Field label="Form Name" />
+              <Form.Input
+                placeholder="Form Name"
+                onChange={formNameChange}
+                value={formName}
+              />
+            </FormField>
+          </Indent>
+        </Group>
+        {formName && (
+          <Group>
+            <p style={{ fontSize: "1.33em" }}>
+              <b>Step 2.</b> Select a type of form
+            </p>
+            <Indent>
+              <FormSelect
+                fluid
+                label="Form Type"
+                options={[
+                  { key: 0, text: "JSON Body Post", value: 1 },
+                  { key: 1, text: "HTML Form Post", value: 2 }
+                ]}
+                placeholder="Form Type"
+                onChange={formTypeChange}
+                value={formType}
+              />
             </Indent>
-          </FieldContainer>
-        ))}
-      </Group>
+          </Group>
+        )}
+        {formType > 0 && (
+          <Group>
+            <p style={{ fontSize: "1.33em" }}>
+              <b>Step 3.</b> Create & Configure your fields
+            </p>
+            {formFields.map((formField, fieldIndex) => (
+              <FieldContainer key={fieldIndex}>
+                <Collapsible
+                  header={
+                    <p style={{ fontSize: "1.16em" }}>
+                      <b>Field {fieldIndex + 1}</b>
+                    </p>
+                  }
+                >
+                  <Indent>
+                    <FormField>
+                      <label>Field Name</label>
+                      <input placeholder="Field Name" />
+                    </FormField>
+
+                    <FormSelect
+                      fluid
+                      label="Field Type"
+                      onChange={fieldTypeChange(fieldIndex)}
+                      options={formFieldTypes.map(
+                        (fieldType, fieldTypeIndex) => ({
+                          key: fieldTypeIndex,
+                          text: fieldType.name,
+                          value: fieldType.formFieldTypeId
+                        })
+                      )}
+                      placeholder="Field Type"
+                    />
+
+                    {formField.formFieldTypeId > 0 && (
+                      <FormSelect
+                        fluid
+                        label="Validation Type"
+                        onChange={validationTypeChange(fieldIndex)}
+                        value={formField.validation.type}
+                        options={[
+                          {
+                            key: 0,
+                            text: "None",
+                            value: 0
+                          },
+                          {
+                            key: 1,
+                            text: "Basic Rules",
+                            value: 1
+                          },
+                          {
+                            key: 2,
+                            text: "Custom Javascript",
+                            value: 2
+                          }
+                        ]}
+                        placeholder="Validation Type"
+                      />
+                    )}
+                    {formField.validation.type === 2 && (
+                      <Indent>
+                        <FormTextArea
+                          label="Custom validation script"
+                          placeholder="JavaScript"
+                        ></FormTextArea>
+                      </Indent>
+                    )}
+                    {formField.validation.type === 1 &&
+                      validationTypes[formField.formFieldTypeId] && (
+                        <>
+                          {formField.validation.rules.map((rule, ruleIndex) => (
+                            <RuleContainer key={ruleIndex}>
+                              <Indent>
+                                <p style={{ fontSize: "1.1em" }}>
+                                  <Icon
+                                    name={
+                                      formField.validation.rules[ruleIndex]
+                                        .collapsed
+                                        ? "plus"
+                                        : "minus"
+                                    }
+                                    onClick={() =>
+                                      collapseRule(fieldIndex, ruleIndex)
+                                    }
+                                  />
+                                  <b>Rule {ruleIndex + 1}</b>
+                                </p>
+                                <Indent
+                                  style={{
+                                    display: formField.validation.rules[
+                                      ruleIndex
+                                    ].collapsed
+                                      ? "none"
+                                      : "block"
+                                  }}
+                                >
+                                  <FormSelect
+                                    fluid
+                                    label="Rule Type"
+                                    onChange={ruleTypeChange(
+                                      fieldIndex,
+                                      ruleIndex
+                                    )}
+                                    options={validationTypes[
+                                      formField.formFieldTypeId
+                                    ].map((validationType, index) => ({
+                                      key: index,
+                                      text: validationType.name,
+                                      value:
+                                        validationType.formValidationRuleTypeId
+                                    }))}
+                                    placeholder="Rule Type"
+                                  />
+                                  {formField.validation.rules[ruleIndex].type >
+                                    1 && (
+                                    <FormField>
+                                      <label>Rule Value</label>
+                                      <input placeholder="Value" />
+                                    </FormField>
+                                  )}
+                                </Indent>
+                                {ruleIndex ===
+                                  formField.validation.rules.length - 1 && (
+                                  <div style={{ marginTop: 16 }}>
+                                    <Button
+                                      color="yellow"
+                                      style={{ marginTop: 16 }}
+                                      onClick={() => addRule(fieldIndex)}
+                                      inverted
+                                    >
+                                      <Icon name="add circle" />
+                                      Add Rule
+                                    </Button>
+                                    <Button
+                                      inverted
+                                      color="red"
+                                      onClick={() => removeRule(fieldIndex)}
+                                    >
+                                      <Icon name="x" /> Remove
+                                    </Button>
+                                  </div>
+                                )}
+                              </Indent>
+                            </RuleContainer>
+                          ))}
+                        </>
+                      )}
+                  </Indent>
+                </Collapsible>
+                {fieldIndex === formFields.length - 1 && (
+                  <div style={{ marginTop: 16 }}>
+                    <Button color="blue" onClick={addFormField} inverted>
+                      <Icon name="add circle" />
+                      Add Field
+                    </Button>
+                    <Button inverted color="red" onClick={removeFormField}>
+                      <Icon name="x" /> Remove
+                    </Button>
+                  </div>
+                )}
+              </FieldContainer>
+            ))}
+          </Group>
+        )}
+      </Indent>
+
+      {formFields.length > 0 && (
+        <div style={{ marginTop: 32 }}>
+          <Button color="green" inverted size="large">
+            Submit Form
+          </Button>
+          <Button color="grey" inverted size="large">
+            Clear
+          </Button>
+        </div>
+      )}
     </Form>
   );
 }
