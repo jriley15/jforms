@@ -7,12 +7,12 @@ namespace JForms.Data.Local
     public enum RuleType
     {
         Required = 1,
-        NumberMin,
-        NumberMax,
-        StringMin,
-        StringMax,
-        DateMin,
-        DateMax,
+        Minimum_Value,
+        Maxmimum__Value,
+        Minimum_Length,
+        Maxmimum_Length,
+        Minimum_Date,
+        Maxmimum_Date,
         Regex //??
 
         

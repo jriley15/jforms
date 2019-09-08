@@ -3,15 +3,17 @@ using System;
 using JForms.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace JForms.Data.Migrations
 {
     [DbContext(typeof(DbContext))]
-    partial class DbContextModelSnapshot : ModelSnapshot
+    [Migration("20190908060617_3")]
+    partial class _3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -326,32 +328,32 @@ namespace JForms.Data.Migrations
                         new
                         {
                             FormValidationRuleTypeId = 2,
-                            Name = "Minimum_Value"
+                            Name = "NumberMin"
                         },
                         new
                         {
                             FormValidationRuleTypeId = 3,
-                            Name = "Maxmimum__Value"
+                            Name = "NumberMax"
                         },
                         new
                         {
                             FormValidationRuleTypeId = 4,
-                            Name = "Minimum_Length"
+                            Name = "StringMin"
                         },
                         new
                         {
                             FormValidationRuleTypeId = 5,
-                            Name = "Maxmimum_Length"
+                            Name = "StringMax"
                         },
                         new
                         {
                             FormValidationRuleTypeId = 6,
-                            Name = "Minimum_Date"
+                            Name = "DateMin"
                         },
                         new
                         {
                             FormValidationRuleTypeId = 7,
-                            Name = "Maxmimum_Date"
+                            Name = "DateMax"
                         },
                         new
                         {

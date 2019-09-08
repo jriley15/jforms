@@ -13,6 +13,10 @@ namespace JForms.Data
 
         public DbSet<Form> Forms { get; set; }
 
+        public DbSet<FormFieldType> FormFieldTypes { get; set; }
+
+        public DbSet<FormValidationRuleType> FormValidationRuleTypes { get; set; }
+
         public DbSet<User> Users { get; set; }
 
 
@@ -40,14 +44,24 @@ namespace JForms.Data
 
             foreach (FieldType fieldType in (FieldType[])Enum.GetValues(typeof(FieldType)))
             {
-                modelBuilder.Entity<FormFieldType>().HasData(new FormFieldType { FormFieldTypeId = (int)fieldType, Value = fieldType.ToString() });
+                modelBuilder.Entity<FormFieldType>().HasData(new FormFieldType { FormFieldTypeId = (int)fieldType, Name = fieldType.ToString() });
             }
 
-            foreach (ValidationType fieldType in (ValidationType[])Enum.GetValues(typeof(ValidationType)))
+            foreach (RuleType ruleType in (RuleType[])Enum.GetValues(typeof(RuleType)))
             {
-                modelBuilder.Entity<FormValidationRuleType>().HasData(new FormFieldType { FormFieldTypeId = (int)fieldType, Value = fieldType.ToString() });
+                modelBuilder.Entity<FormValidationRuleType>().HasData(new FormValidationRuleType { FormValidationRuleTypeId = (int)ruleType, Name = ruleType.ToString() });
             }
 
+
+            //String validation types
+            modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.String, FormValidationRuleTypeId = (int)RuleType.Required });
+            modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.String, FormValidationRuleTypeId = (int)RuleType.Minimum_Length });
+            modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.String, FormValidationRuleTypeId = (int)RuleType.Maxmimum_Length });
+
+            //Number validation types
+            modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.Number, FormValidationRuleTypeId = (int)RuleType.Required });
+            modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.Number, FormValidationRuleTypeId = (int)RuleType.Minimum_Value });
+            modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.Number, FormValidationRuleTypeId = (int)RuleType.Maxmimum__Value });
 
         }
 

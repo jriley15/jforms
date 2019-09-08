@@ -30,6 +30,7 @@ namespace JForms
 
             services.AddTransient<ISubmitService, SubmitService>();
             services.AddTransient<IFormService, FormService>();
+            services.AddTransient<IFormFieldService, FormFieldService>();
 
         }
 
@@ -42,6 +43,14 @@ namespace JForms
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(policy =>
+            {
+                policy.AllowAnyHeader();
+                policy.AllowAnyMethod();
+                policy.SetIsOriginAllowed((host) => true);
+                policy.AllowCredentials();
+            });
 
             app.UseRouting();
 

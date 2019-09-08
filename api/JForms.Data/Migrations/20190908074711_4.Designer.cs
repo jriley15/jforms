@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JForms.Data.Migrations
 {
     [DbContext(typeof(DbContext))]
-    [Migration("20190908015408_4")]
+    [Migration("20190908074711_4")]
     partial class _4
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace JForms.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.0.0-preview8.19405.11")
+                .HasAnnotation("ProductVersion", "3.0.0-preview9.19423.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("JForms.Data.Entity.Form", b =>
@@ -101,43 +101,52 @@ namespace JForms.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Value")
+                    b.Property<bool>("MultipleOptions")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.HasKey("FormFieldTypeId");
 
-                    b.ToTable("FormFieldType");
+                    b.ToTable("FormFieldTypes");
 
                     b.HasData(
                         new
                         {
                             FormFieldTypeId = 1,
-                            Value = "String"
+                            MultipleOptions = false,
+                            Name = "String"
                         },
                         new
                         {
                             FormFieldTypeId = 2,
-                            Value = "Number"
+                            MultipleOptions = false,
+                            Name = "Number"
                         },
                         new
                         {
                             FormFieldTypeId = 3,
-                            Value = "Date"
+                            MultipleOptions = false,
+                            Name = "Date"
                         },
                         new
                         {
                             FormFieldTypeId = 4,
-                            Value = "RadioButton"
+                            MultipleOptions = false,
+                            Name = "RadioButton"
                         },
                         new
                         {
                             FormFieldTypeId = 5,
-                            Value = "DropDown"
+                            MultipleOptions = false,
+                            Name = "DropDown"
                         },
                         new
                         {
                             FormFieldTypeId = 6,
-                            Value = "MultiSelect"
+                            MultipleOptions = false,
+                            Name = "MultiSelect"
                         });
                 });
 
@@ -154,6 +163,38 @@ namespace JForms.Data.Migrations
                     b.HasIndex("FormValidationRuleTypeId");
 
                     b.ToTable("FormFieldTypeRuleType");
+
+                    b.HasData(
+                        new
+                        {
+                            FormFieldTypeId = 1,
+                            FormValidationRuleTypeId = 1
+                        },
+                        new
+                        {
+                            FormFieldTypeId = 1,
+                            FormValidationRuleTypeId = 4
+                        },
+                        new
+                        {
+                            FormFieldTypeId = 1,
+                            FormValidationRuleTypeId = 5
+                        },
+                        new
+                        {
+                            FormFieldTypeId = 2,
+                            FormValidationRuleTypeId = 1
+                        },
+                        new
+                        {
+                            FormFieldTypeId = 2,
+                            FormValidationRuleTypeId = 2
+                        },
+                        new
+                        {
+                            FormFieldTypeId = 2,
+                            FormValidationRuleTypeId = 3
+                        });
                 });
 
             modelBuilder.Entity("JForms.Data.Entity.FormFieldValidation", b =>
@@ -271,9 +312,54 @@ namespace JForms.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
                     b.HasKey("FormValidationRuleTypeId");
 
-                    b.ToTable("FormValidationRuleType");
+                    b.ToTable("FormValidationRuleTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            FormValidationRuleTypeId = 1,
+                            Name = "Required"
+                        },
+                        new
+                        {
+                            FormValidationRuleTypeId = 2,
+                            Name = "Minimum_Value"
+                        },
+                        new
+                        {
+                            FormValidationRuleTypeId = 3,
+                            Name = "Maxmimum__Value"
+                        },
+                        new
+                        {
+                            FormValidationRuleTypeId = 4,
+                            Name = "Minimum_Length"
+                        },
+                        new
+                        {
+                            FormValidationRuleTypeId = 5,
+                            Name = "Maxmimum_Length"
+                        },
+                        new
+                        {
+                            FormValidationRuleTypeId = 6,
+                            Name = "Minimum_Date"
+                        },
+                        new
+                        {
+                            FormValidationRuleTypeId = 7,
+                            Name = "Maxmimum_Date"
+                        },
+                        new
+                        {
+                            FormValidationRuleTypeId = 8,
+                            Name = "Regex"
+                        });
                 });
 
             modelBuilder.Entity("JForms.Data.Entity.User", b =>

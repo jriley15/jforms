@@ -3,15 +3,17 @@ using System;
 using JForms.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace JForms.Data.Migrations
 {
     [DbContext(typeof(DbContext))]
-    partial class DbContextModelSnapshot : ModelSnapshot
+    [Migration("20190908025817_1")]
+    partial class _1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,9 +101,6 @@ namespace JForms.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<bool>("MultipleOptions")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -113,37 +112,31 @@ namespace JForms.Data.Migrations
                         new
                         {
                             FormFieldTypeId = 1,
-                            MultipleOptions = false,
                             Name = "String"
                         },
                         new
                         {
                             FormFieldTypeId = 2,
-                            MultipleOptions = false,
                             Name = "Number"
                         },
                         new
                         {
                             FormFieldTypeId = 3,
-                            MultipleOptions = false,
                             Name = "Date"
                         },
                         new
                         {
                             FormFieldTypeId = 4,
-                            MultipleOptions = false,
                             Name = "RadioButton"
                         },
                         new
                         {
                             FormFieldTypeId = 5,
-                            MultipleOptions = false,
                             Name = "DropDown"
                         },
                         new
                         {
                             FormFieldTypeId = 6,
-                            MultipleOptions = false,
                             Name = "MultiSelect"
                         });
                 });
@@ -161,38 +154,6 @@ namespace JForms.Data.Migrations
                     b.HasIndex("FormValidationRuleTypeId");
 
                     b.ToTable("FormFieldTypeRuleType");
-
-                    b.HasData(
-                        new
-                        {
-                            FormFieldTypeId = 1,
-                            FormValidationRuleTypeId = 1
-                        },
-                        new
-                        {
-                            FormFieldTypeId = 1,
-                            FormValidationRuleTypeId = 4
-                        },
-                        new
-                        {
-                            FormFieldTypeId = 1,
-                            FormValidationRuleTypeId = 5
-                        },
-                        new
-                        {
-                            FormFieldTypeId = 2,
-                            FormValidationRuleTypeId = 1
-                        },
-                        new
-                        {
-                            FormFieldTypeId = 2,
-                            FormValidationRuleTypeId = 2
-                        },
-                        new
-                        {
-                            FormFieldTypeId = 2,
-                            FormValidationRuleTypeId = 3
-                        });
                 });
 
             modelBuilder.Entity("JForms.Data.Entity.FormFieldValidation", b =>
@@ -315,7 +276,7 @@ namespace JForms.Data.Migrations
 
                     b.HasKey("FormValidationRuleTypeId");
 
-                    b.ToTable("FormValidationRuleTypes");
+                    b.ToTable("FormValidationRuleType");
 
                     b.HasData(
                         new
@@ -326,32 +287,32 @@ namespace JForms.Data.Migrations
                         new
                         {
                             FormValidationRuleTypeId = 2,
-                            Name = "Minimum_Value"
+                            Name = "NumberMin"
                         },
                         new
                         {
                             FormValidationRuleTypeId = 3,
-                            Name = "Maxmimum__Value"
+                            Name = "NumberMax"
                         },
                         new
                         {
                             FormValidationRuleTypeId = 4,
-                            Name = "Minimum_Length"
+                            Name = "StringMin"
                         },
                         new
                         {
                             FormValidationRuleTypeId = 5,
-                            Name = "Maxmimum_Length"
+                            Name = "StringMax"
                         },
                         new
                         {
                             FormValidationRuleTypeId = 6,
-                            Name = "Minimum_Date"
+                            Name = "DateMin"
                         },
                         new
                         {
                             FormValidationRuleTypeId = 7,
-                            Name = "Maxmimum_Date"
+                            Name = "DateMax"
                         },
                         new
                         {
