@@ -17,7 +17,7 @@ namespace JForms.Data.Entity
         public string Script { get; set; }
 
         //built in rules for validation
-        public ICollection<FormValidationRule> Rules { get; set; }
+        public ICollection<FormFieldValidationRule> Rules { get; set; }
 
     }
 }

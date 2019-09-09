@@ -20,7 +20,7 @@ namespace JForms.Application.Services
 
         Task<IEnumerable<FormFieldType>> GetTypes();
 
-        Task<IEnumerable<FormValidationRuleType>> GetValidationTypes(FieldType fieldType);
+        Task<IEnumerable<FormFieldValidationRuleType>> GetValidationTypes(FieldType fieldType);
 
     }
 
@@ -42,10 +42,10 @@ namespace JForms.Application.Services
             return await _dbContext.FormFieldTypes.ToListAsync();
         }
 
-        public async Task<IEnumerable<FormValidationRuleType>> GetValidationTypes(FieldType fieldType)
+        public async Task<IEnumerable<FormFieldValidationRuleType>> GetValidationTypes(FieldType fieldType)
         {
             var field = (int)fieldType;
-            return await _dbContext.FormValidationRuleTypes
+            return await _dbContext.FormFieldValidationRuleTypes
                 .Include(x => x.FormFieldTypeRuleType)
                 .ThenInclude(x => x.FormFieldType)
                 .Where(x => x.FormFieldTypeRuleType.Any(y => y.FormFieldTypeId == field)).ToListAsync();

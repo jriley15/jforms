@@ -32,9 +32,9 @@ namespace JForms.API.Controllers
 
         //form data fetch from UI here for user submissions / owner editing
         [HttpGet]
-        public async Task<IActionResult> Get(int formId)
+        public async Task<Form> Get(int formId)
         {
-            return this.GenerateResponse(await _formService.Get(formId));
+            return await _formService.Get(formId);
         }
 
 

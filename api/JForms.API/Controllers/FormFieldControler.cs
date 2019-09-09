@@ -32,7 +32,7 @@ namespace JForms.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<FormValidationRuleType>> GetValidationTypes(FieldType fieldType)
+        public async Task<IEnumerable<FormFieldValidationRuleType>> GetValidationTypes(FieldType fieldType)
         {
             return await _formFieldService.GetValidationTypes(fieldType);
         }

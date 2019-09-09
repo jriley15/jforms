@@ -3,15 +3,17 @@ using System;
 using JForms.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace JForms.Data.Migrations
 {
     [DbContext(typeof(DbContext))]
-    partial class DbContextModelSnapshot : ModelSnapshot
+    [Migration("20190909014943_5")]
+    partial class _5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,23 +51,23 @@ namespace JForms.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("FormFieldTypeId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("FormId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<int?>("TypeFormFieldTypeId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("ValidationFormFieldValidationId")
                         .HasColumnType("integer");
 
                     b.HasKey("FormFieldId");
 
-                    b.HasIndex("FormFieldTypeId");
-
                     b.HasIndex("FormId");
+
+                    b.HasIndex("TypeFormFieldTypeId");
 
                     b.HasIndex("ValidationFormFieldValidationId");
 
@@ -226,14 +228,14 @@ namespace JForms.Data.Migrations
                     b.Property<int?>("FormFieldValidationId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("FormFieldValidationRuleTypeId")
+                    b.Property<int?>("TypeFormFieldValidationRuleTypeId")
                         .HasColumnType("integer");
 
                     b.HasKey("FormFieldValidationRuleId");
 
                     b.HasIndex("FormFieldValidationId");
 
-                    b.HasIndex("FormFieldValidationRuleTypeId");
+                    b.HasIndex("TypeFormFieldValidationRuleTypeId");
 
                     b.ToTable("FormFieldValidationRule");
                 });
@@ -381,15 +383,13 @@ namespace JForms.Data.Migrations
 
             modelBuilder.Entity("JForms.Data.Entity.FormField", b =>
                 {
-                    b.HasOne("JForms.Data.Entity.FormFieldType", "FormFieldType")
-                        .WithMany()
-                        .HasForeignKey("FormFieldTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("JForms.Data.Entity.Form", null)
                         .WithMany("Fields")
                         .HasForeignKey("FormId");
+
+                    b.HasOne("JForms.Data.Entity.FormFieldType", "Type")
+                        .WithMany()
+                        .HasForeignKey("TypeFormFieldTypeId");
 
                     b.HasOne("JForms.Data.Entity.FormFieldValidation", "Validation")
                         .WithMany()
@@ -424,11 +424,9 @@ namespace JForms.Data.Migrations
                         .WithMany("Rules")
                         .HasForeignKey("FormFieldValidationId");
 
-                    b.HasOne("JForms.Data.Entity.FormFieldValidationRuleType", "FormFieldValidationRuleType")
+                    b.HasOne("JForms.Data.Entity.FormFieldValidationRuleType", "Type")
                         .WithMany()
-                        .HasForeignKey("FormFieldValidationRuleTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TypeFormFieldValidationRuleTypeId");
                 });
 
             modelBuilder.Entity("JForms.Data.Entity.FormOrigin", b =>

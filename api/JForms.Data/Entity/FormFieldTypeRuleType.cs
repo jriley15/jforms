@@ -8,7 +8,7 @@ namespace JForms.Data.Entity
     {
         public int FormValidationRuleTypeId { get; set; }
 
-        public FormValidationRuleType FormValidationRuleType { get; set; }
+        public FormFieldValidationRuleType FormValidationRuleType { get; set; }
 
         public int FormFieldTypeId { get; set; }
 

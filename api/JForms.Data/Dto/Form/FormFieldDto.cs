@@ -14,5 +14,7 @@ namespace JForms.Data.Dto.Form
 
         public FieldType Type { get; set; }
 
+        public FormFieldValidationDto Validation { get; set; }
+
     }
 }

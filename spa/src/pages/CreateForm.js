@@ -47,16 +47,28 @@ export default function CreateForm() {
   const [formName, setFormName] = useState("");
   const [formType, setFormType] = useState(0);
 
-  const submitForm = () => {};
+  const submitForm = () => {
+    const form = {
+      Name: formName,
+      Type: formType,
+      Fields: formFields
+    };
+
+    Axios.post(apiUrl + "/Form/Create", form)
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {});
+  };
 
   const addFormField = () => {
     const field = {
-      name: "",
-      formFieldTypeId: 0,
-      validation: {
-        type: 0,
-        script: "",
-        rules: []
+      Name: "",
+      Type: 0,
+      Validation: {
+        Type: 0,
+        Script: "",
+        Rules: []
       }
     };
     setFormFields(formFields => [...formFields, field]);
@@ -72,17 +84,17 @@ export default function CreateForm() {
 
   const addRule = fieldIndex => {
     const fields = [...formFields];
-    fields[fieldIndex].validation.rules.push({
-      type: 0,
-      value: ""
+    fields[fieldIndex].Validation.Rules.push({
+      Type: 0,
+      Value: ""
     });
     setFormFields(fields);
   };
 
   const removeRule = fieldIndex => {
     const fields = [...formFields];
-    fields[fieldIndex].validation.rules.splice(
-      fields[fieldIndex].validation.rules.length - 1,
+    fields[fieldIndex].Validation.Rules.splice(
+      fields[fieldIndex].Validation.Rules.length - 1,
       1
     );
     setFormFields(fields);
@@ -90,25 +102,25 @@ export default function CreateForm() {
 
   const resetRules = fieldIndex => {
     const fields = [...formFields];
-    fields[fieldIndex].validation.rules = [];
+    fields[fieldIndex].Validation.Rules = [];
     setFormFields(fields);
   };
 
   const resetValidationType = fieldIndex => {
     const fields = [...formFields];
-    fields[fieldIndex].validation.type = 0;
+    fields[fieldIndex].Validation.Type = 0;
     setFormFields(fields);
   };
 
   const setValidationType = (fieldIndex, type) => {
     const fields = [...formFields];
-    fields[fieldIndex].validation.type = type;
+    fields[fieldIndex].Validation.Type = type;
     setFormFields(fields);
   };
 
   const fieldTypeChange = fieldIndex => (e, { value }) => {
     const fields = [...formFields];
-    fields[fieldIndex].formFieldTypeId = value;
+    fields[fieldIndex].Type = value;
     setFormFields(fields);
     resetRules(fieldIndex);
     resetValidationType(fieldIndex);
@@ -124,13 +136,13 @@ export default function CreateForm() {
 
       Axios.get(apiUrl + "/FormField/GetValidationTypes", {
         params: {
-          fieldType: formFields[fieldIndex].formFieldTypeId
+          fieldType: formFields[fieldIndex].Type
         }
       })
         .then(response => {
           let validTypes = response.data;
 
-          types[formFields[fieldIndex].formFieldTypeId] = validTypes;
+          types[formFields[fieldIndex].Type] = validTypes;
 
           setValidationTypes(types);
         })
@@ -140,7 +152,7 @@ export default function CreateForm() {
 
   const ruleTypeChange = (fieldIndex, ruleIndex) => (e, { value }) => {
     const fields = [...formFields];
-    fields[fieldIndex].validation.rules[ruleIndex].type = value;
+    fields[fieldIndex].Validation.Rules[ruleIndex].Type = value;
     setFormFields(fields);
   };
 
@@ -148,15 +160,33 @@ export default function CreateForm() {
     setFormName(value);
   };
 
+  const fieldNameChange = fieldIndex => (e, { value }) => {
+    const fields = [...formFields];
+    fields[fieldIndex].Name = value;
+    setFormFields(fields);
+  };
+
   const formTypeChange = (e, { value }) => {
     setFormType(value);
     if (formFields.length === 0) addFormField();
+  };
+
+  const ruleValueChange = (fieldIndex, ruleIndex) => (e, { value }) => {
+    const fields = [...formFields];
+    fields[fieldIndex].Validation.Rules[ruleIndex].Value = value;
+    setFormFields(fields);
   };
 
   const resetForm = () => {
     setFormName("");
     setFormFields([]);
     setFormType(0);
+  };
+
+  const validationScriptChange = fieldIndex => (e, { value }) => {
+    const fields = [...formFields];
+    fields[fieldIndex].Validation.Script = value;
+    setFormFields(fields);
   };
 
   useEffect(() => {
@@ -228,8 +258,12 @@ export default function CreateForm() {
                     style={{ borderLeft: "1px solid white", marginLeft: "8px" }}
                   >
                     <FormField>
-                      <label>Field Name</label>
-                      <input placeholder="Field Name" />
+                      <Form.Field label="Field Name" />
+                      <Form.Input
+                        placeholder="Field Name"
+                        onChange={fieldNameChange(fieldIndex)}
+                        value={formField.Name}
+                      />
                     </FormField>
 
                     <FormSelect
@@ -246,12 +280,12 @@ export default function CreateForm() {
                       placeholder="Field Type"
                     />
 
-                    {formField.formFieldTypeId > 0 && (
+                    {formField.Type > 0 && (
                       <FormSelect
                         fluid
                         label="Validation Type"
                         onChange={validationTypeChange(fieldIndex)}
-                        value={formField.validation.type}
+                        value={formField.Validation.Type}
                         options={[
                           {
                             key: 0,
@@ -272,18 +306,19 @@ export default function CreateForm() {
                         placeholder="Validation Type"
                       />
                     )}
-                    {formField.validation.type === 2 && (
+                    {formField.Validation.Type === 2 && (
                       <Indent>
                         <FormTextArea
                           label="Custom validation script"
                           placeholder="JavaScript"
+                          onChange={validationScriptChange(fieldIndex)}
                         ></FormTextArea>
                       </Indent>
                     )}
-                    {formField.validation.type === 1 &&
-                      validationTypes[formField.formFieldTypeId] && (
+                    {formField.Validation.Type === 1 &&
+                      validationTypes[formField.Type] && (
                         <>
-                          {formField.validation.rules.map((rule, ruleIndex) => (
+                          {formField.Validation.Rules.map((rule, ruleIndex) => (
                             <RuleContainer key={ruleIndex}>
                               <Collapsible
                                 header={
@@ -306,7 +341,7 @@ export default function CreateForm() {
                                       ruleIndex
                                     )}
                                     options={validationTypes[
-                                      formField.formFieldTypeId
+                                      formField.Type
                                     ].map((validationType, index) => ({
                                       key: index,
                                       text: validationType.name,
@@ -315,17 +350,27 @@ export default function CreateForm() {
                                     }))}
                                     placeholder="Rule Type"
                                   />
-                                  {formField.validation.rules[ruleIndex].type >
+                                  {formField.Validation.Rules[ruleIndex].Type >
                                     1 && (
                                     <FormField>
-                                      <label>Rule Value</label>
-                                      <input placeholder="Value" />
+                                      <Form.Field label="Rule Value" />
+                                      <Form.Input
+                                        placeholder="Constraint"
+                                        onChange={ruleValueChange(
+                                          fieldIndex,
+                                          ruleIndex
+                                        )}
+                                        value={
+                                          formField.Validation.Rules[ruleIndex]
+                                            .Value
+                                        }
+                                      />
                                     </FormField>
                                   )}
                                 </Indent>
                               </Collapsible>
                               {ruleIndex ===
-                                formField.validation.rules.length - 1 && (
+                                formField.Validation.Rules.length - 1 && (
                                 <div style={{ marginTop: 32 }}>
                                   <Button
                                     color="yellow"
@@ -335,7 +380,7 @@ export default function CreateForm() {
                                     <Icon name="add circle" />
                                     Add Rule
                                   </Button>
-                                  {formField.validation.rules.length > 1 && (
+                                  {formField.Validation.Rules.length > 1 && (
                                     <Button
                                       inverted
                                       color="red"
@@ -376,7 +421,7 @@ export default function CreateForm() {
             </p>
 
             <Indent>
-              <Button color="green" inverted size="large">
+              <Button color="green" inverted size="large" onClick={submitForm}>
                 Submit Form
               </Button>
               <Button color="grey" inverted size="large" onClick={resetForm}>

@@ -7,7 +7,7 @@ namespace JForms.Data.Local
 {
     public enum FormType
     {
-        Json,
+        JsonBody = 1,
         FormData
 
     }

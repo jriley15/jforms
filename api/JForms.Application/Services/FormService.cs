@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using JForms.Application.Helpers;
 using JForms.Data;
 using JForms.Data.Dto;
 using JForms.Data.Dto.Form;
 using JForms.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +18,7 @@ namespace JForms.Application.Services
 
         Task<Response> Create(CreateFormDto form);
 
-        Task<GetFormResponseDto> Get(int formId);
+        Task<Form> Get(int formId);
 
         Task<SearchFormResponseDto> Search(SearchFormDto search);
 
@@ -30,11 +32,11 @@ namespace JForms.Application.Services
     public class FormService : IFormService
     {
 
-        private readonly DbContext _dbContext;
+        private readonly Data.DbContext _dbContext;
 
         private readonly IMapper _mapper;
 
-        public FormService(DbContext dbContext, IMapper mapper)
+        public FormService(Data.DbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -45,7 +47,7 @@ namespace JForms.Application.Services
         {
             var response = new Response();
 
-            var formEntity = _mapper.Map<Form>(form);
+            var formEntity = FormHelper.MapForm(form);//_mapper.Map<Form>(form);
 
             await _dbContext.Forms.AddAsync(formEntity);
 
@@ -56,9 +58,9 @@ namespace JForms.Application.Services
             return response;
         }
 
-        public Task<GetFormResponseDto> Get(int formId)
+        public async Task<Form> Get(int formId)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Forms.Include(f => f.Fields).ThenInclude(f => f.Validation).ThenInclude(v => v.Rules).SingleOrDefaultAsync(f => f.FormId == formId);
         }
 
         public Task<SearchFormResponseDto> Search(SearchFormDto search)

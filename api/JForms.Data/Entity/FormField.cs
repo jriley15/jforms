@@ -16,7 +16,10 @@ namespace JForms.Data.Entity
         public string Name { get; set; }
 
         //field type
-        public FormFieldType Type { get; set; }
+
+        public int FormFieldTypeId { get; set; }
+        public FormFieldType FormFieldType { get; set; }
+
 
         //options for radio buttons, multi-selects, and drop-downs
         public ICollection<FormFieldOption> Options { get; set; }

@@ -15,7 +15,7 @@ namespace JForms.Data
 
         public DbSet<FormFieldType> FormFieldTypes { get; set; }
 
-        public DbSet<FormValidationRuleType> FormValidationRuleTypes { get; set; }
+        public DbSet<FormFieldValidationRuleType> FormFieldValidationRuleTypes { get; set; }
 
         public DbSet<User> Users { get; set; }
 
@@ -49,7 +49,7 @@ namespace JForms.Data
 
             foreach (RuleType ruleType in (RuleType[])Enum.GetValues(typeof(RuleType)))
             {
-                modelBuilder.Entity<FormValidationRuleType>().HasData(new FormValidationRuleType { FormValidationRuleTypeId = (int)ruleType, Name = ruleType.ToString() });
+                modelBuilder.Entity<FormFieldValidationRuleType>().HasData(new FormFieldValidationRuleType { FormFieldValidationRuleTypeId = (int)ruleType, Name = ruleType.ToString() });
             }
 
 

@@ -5,11 +5,11 @@ using System.Text.Json.Serialization;
 
 namespace JForms.Data.Entity
 {
-    public class FormValidationRuleType
+    public class FormFieldValidationRuleType
     {
 
         //primary key
-        public int FormValidationRuleTypeId { get; set; }
+        public int FormFieldValidationRuleTypeId { get; set; }
 
         //Name of rule type
         public string Name { get; set; }
