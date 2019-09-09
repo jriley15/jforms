@@ -47,6 +47,8 @@ export default function CreateForm() {
   const [formName, setFormName] = useState("");
   const [formType, setFormType] = useState(0);
 
+  const submitForm = () => {};
+
   const addFormField = () => {
     const field = {
       name: "",
@@ -112,31 +114,14 @@ export default function CreateForm() {
     resetValidationType(fieldIndex);
   };
 
-  const collapseField = fieldIndex => {
-    const fields = [...formFields];
-    fields[fieldIndex].collapsed = !fields[fieldIndex].collapsed;
-    setFormFields(fields);
-  };
-
-  const collapseRule = (fieldIndex, ruleIndex) => {
-    const fields = [...formFields];
-    fields[fieldIndex].validation.rules[ruleIndex].collapsed = !fields[
-      fieldIndex
-    ].validation.rules[ruleIndex].collapsed;
-    setFormFields(fields);
-  };
-
   const validationTypeChange = fieldIndex => (e, { value }) => {
     setValidationType(fieldIndex, value);
 
     if (value === 1) {
       resetRules(fieldIndex);
       addRule(fieldIndex);
-      //get validation types for field
-
       const types = [...validationTypes];
 
-      //axios
       Axios.get(apiUrl + "/FormField/GetValidationTypes", {
         params: {
           fieldType: formFields[fieldIndex].formFieldTypeId
@@ -150,8 +135,6 @@ export default function CreateForm() {
           setValidationTypes(types);
         })
         .catch(error => {});
-
-      //add validation type with this type as the key
     }
   };
 
@@ -167,7 +150,13 @@ export default function CreateForm() {
 
   const formTypeChange = (e, { value }) => {
     setFormType(value);
-    addFormField();
+    if (formFields.length === 0) addFormField();
+  };
+
+  const resetForm = () => {
+    setFormName("");
+    setFormFields([]);
+    setFormType(0);
   };
 
   useEffect(() => {
@@ -188,7 +177,7 @@ export default function CreateForm() {
       <Indent>
         <Group>
           <p style={{ fontSize: "1.33em" }}>
-            <b>Step 1.</b> Select a name for your form
+            <b>Step 1.</b> Make a name for your form
           </p>
           <Indent>
             <FormField>
@@ -390,7 +379,7 @@ export default function CreateForm() {
               <Button color="green" inverted size="large">
                 Submit Form
               </Button>
-              <Button color="grey" inverted size="large">
+              <Button color="grey" inverted size="large" onClick={resetForm}>
                 Clear
               </Button>
             </Indent>
