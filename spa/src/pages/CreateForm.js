@@ -5,7 +5,8 @@ import {
   Container,
   Icon,
   Button,
-  Segment
+  Segment,
+  Message
 } from "semantic-ui-react";
 import styled from "styled-components";
 import Axios from "axios";
@@ -207,7 +208,7 @@ export default function CreateForm() {
       <Indent>
         <Group>
           <p style={{ fontSize: "1.33em" }}>
-            <b>Step 1.</b> Make a name for your form
+            <b>Step 1.</b> Name your form
           </p>
           <Indent>
             <FormField>
@@ -245,6 +246,15 @@ export default function CreateForm() {
             <p style={{ fontSize: "1.33em" }}>
               <b>Step 3.</b> Create & Configure your fields
             </p>
+            <Message color="yellow" style={{ maxWidth: 457 }}>
+              <Message.Header>
+                Fields cannot be changed once the form is created
+              </Message.Header>
+              <p>
+                Make sure you configure them correctly before submitting the
+                form.
+              </p>
+            </Message>
             {formFields.map((formField, fieldIndex) => (
               <FieldContainer key={fieldIndex}>
                 <Collapsible
@@ -346,7 +356,7 @@ export default function CreateForm() {
                                       key: index,
                                       text: validationType.name,
                                       value:
-                                        validationType.formValidationRuleTypeId
+                                        validationType.formFieldValidationRuleTypeId
                                     }))}
                                     placeholder="Rule Type"
                                   />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useCollapse from "react-collapsed";
 import styled from "styled-components";
 import { Icon } from "semantic-ui-react";
@@ -8,8 +8,13 @@ const Indent = styled.div`
 `;
 
 export default function Collapsible({ header, children }) {
-  const [isOpen, setOpen] = useState(true);
+  const [isOpen, setOpen] = useState(false);
   const { getCollapseProps, getToggleProps } = useCollapse({ isOpen });
+
+  useEffect(() => {
+    setOpen(true);
+    return () => {};
+  }, []);
 
   return (
     <Indent>
