@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Menu,
   Image,
@@ -10,8 +10,13 @@ import {
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import Login from "./Login";
+import Register from "./Register";
 
 export default function Navbar() {
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [registerOpen, setRegisterOpen] = useState(false);
+
   return (
     <Segment
       inverted
@@ -30,33 +35,43 @@ export default function Navbar() {
           About
         </Menu.Item>
         <Menu.Item position="right">
-          <Dropdown
-            item
-            text={
-              <>
-                <Icon name="file alternate" size="large" />
-                Forms
-              </>
-            }
+          <Button
+            icon="file alternate"
+            content="Forms"
+            toggle={false}
+            as={Link}
+            to="/form"
+          />
+          <Button
+            inverted
+            style={{ marginLeft: "0.5em" }}
+            onClick={() => setLoginOpen(true)}
           >
-            <Dropdown.Menu>
-              <Dropdown.Item as={Link} to="/form/create">
-                <Icon name="add circle" /> Create Form
-              </Dropdown.Item>
-              <Dropdown.Item as={Link} to="/form">
-                <Icon name="wpforms" /> View Forms
-              </Dropdown.Item>
-              <Dropdown.Item>Test</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-          <Button as={Link} to="/" inverted style={{ marginLeft: "1em" }}>
             Log in
           </Button>
-          <Button as={Link} to="/" inverted style={{ marginLeft: "0.5em" }}>
+          <Button
+            as={Link}
+            to="/"
+            inverted
+            style={{ marginLeft: "0.5em" }}
+            onClick={() => setRegisterOpen(true)}
+          >
             Sign up
           </Button>
         </Menu.Item>
       </Menu>
+      <Login
+        open={loginOpen}
+        close={() => {
+          setLoginOpen(false);
+        }}
+      />
+      <Register
+        open={registerOpen}
+        close={() => {
+          setRegisterOpen(false);
+        }}
+      />
     </Segment>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { apiUrl } from "../config";
-import { Header, Tab, Breadcrumb } from "semantic-ui-react";
+import { Header, Tab, Breadcrumb, Divider } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import SnippetsTab from "../components/forms/SnippetsTab";
 
@@ -67,7 +67,7 @@ export default function ViewForm({ match: { params } }) {
         <Breadcrumb.Divider icon="right chevron" />
         <Breadcrumb.Section active>{form.name}</Breadcrumb.Section>
       </Breadcrumb>
-
+      <Divider inverted />
       <Tab
         panes={panes}
         style={{ marginTop: 32 }}

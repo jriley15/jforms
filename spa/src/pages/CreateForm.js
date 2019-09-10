@@ -10,7 +10,8 @@ import {
   Loader,
   Modal,
   Dimmer,
-  Breadcrumb
+  Breadcrumb,
+  Divider
 } from "semantic-ui-react";
 import styled from "styled-components";
 import Axios from "axios";
@@ -245,14 +246,12 @@ export default function CreateForm() {
             pointerEvents: submitting ? "none" : "auto"
           }}
         >
-          <Header as="h3" style={{ fontSize: "1.5em" }} inverted>
-            Create a new Form
-          </Header>
-          <Indent>
+          <Segment inverted>
             <Group>
               <p style={{ fontSize: "1.33em" }}>
                 <b>Step 1.</b> Name your form
               </p>
+              <Divider inverted />
               <Indent>
                 <FormField>
                   <Form.Field label="Form Name" />
@@ -264,11 +263,14 @@ export default function CreateForm() {
                 </FormField>
               </Indent>
             </Group>
-            {formName && (
+          </Segment>
+          {formName && (
+            <Segment inverted>
               <Group>
                 <p style={{ fontSize: "1.33em" }}>
                   <b>Step 2.</b> Select a type of form
                 </p>
+                <Divider inverted />
                 <Indent>
                   <FormSelect
                     fluid
@@ -283,12 +285,15 @@ export default function CreateForm() {
                   />
                 </Indent>
               </Group>
-            )}
-            {formType > 0 && (
+            </Segment>
+          )}
+          {formType > 0 && (
+            <Segment inverted>
               <Group>
                 <p style={{ fontSize: "1.33em" }}>
                   <b>Step 3.</b> Create & Configure your fields
                 </p>
+                <Divider inverted />
                 <Message color="yellow" style={{ maxWidth: 464 }}>
                   <Message.Header>
                     Warning: fields cannot be changed once the form is created
@@ -481,33 +486,34 @@ export default function CreateForm() {
                   </FieldContainer>
                 ))}
               </Group>
-            )}
-            {formFields.length > 0 && (
+            </Segment>
+          )}
+          {formFields.length > 0 && (
+            <Segment inverted>
               <Group>
                 <p style={{ fontSize: "1.33em" }}>
-                  <b>Step 4.</b> All Done
+                  <b>Step 4.</b> Done
                 </p>
+                <Divider inverted />
 
-                <Indent>
-                  <Button
-                    color="green"
-                    size="large"
-                    icon="check"
-                    labelPosition="left"
-                    content="Submit Form"
-                    onClick={submitForm}
-                  />
-                  <Button
-                    size="large"
-                    icon="x"
-                    labelPosition="left"
-                    content="Clear"
-                    onClick={resetForm}
-                  />
-                </Indent>
+                <Button
+                  color="green"
+                  size="large"
+                  icon="check"
+                  labelPosition="left"
+                  content="Submit Form"
+                  onClick={submitForm}
+                />
+                <Button
+                  size="large"
+                  icon="x"
+                  labelPosition="left"
+                  content="Clear Form"
+                  onClick={resetForm}
+                />
               </Group>
-            )}
-          </Indent>
+            </Segment>
+          )}
         </div>
       </Form>
       <Dimmer active={submitting} page>
