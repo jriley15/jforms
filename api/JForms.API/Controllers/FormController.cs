@@ -17,9 +17,12 @@ namespace JForms.API.Controllers
 
         private readonly IFormService _formService;
 
-        public FormController(IFormService formService)
+        private readonly IFormSnippetservice _formSnippetservice;
+
+        public FormController(IFormService formService, IFormSnippetservice formSnippetservice)
         {
             _formService = formService;
+            _formSnippetservice = formSnippetservice;
         }
 
 
@@ -64,6 +67,11 @@ namespace JForms.API.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IEnumerable<FormSnippetDto>> GetSnippets(int formId)
+        {
+            return await _formSnippetservice.GetSnippets(formId);
+        }
 
     }
 }
