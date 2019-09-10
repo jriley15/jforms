@@ -47,7 +47,6 @@ xhttp.send();`;
       <Code>
         <Button
           content="Copy"
-          labelPosition="left"
           icon="copy"
           inverted
           style={{ position: "absolute", right: 5, top: 10 }}
@@ -63,7 +62,7 @@ xhttp.send();`;
         </SyntaxHighlighter>
       </Code>
 
-      <Header as="h2">Javascript AJAX</Header>
+      <Header as="h2">JavaScript AJAX</Header>
       <p style={{ fontSize: "1.1em" }}>
         Send <a href="">this</a> link to your users for them to fill your form
         out on our UI if you don't have your own website or don't want to deal
@@ -72,7 +71,6 @@ xhttp.send();`;
       <Code>
         <Button
           content="Copy"
-          labelPosition="left"
           icon="copy"
           inverted
           style={{ position: "absolute", right: 5, top: 10 }}
@@ -87,7 +85,7 @@ xhttp.send();`;
         </SyntaxHighlighter>
       </Code>
 
-      <Header as="h2">Javascript Fetch</Header>
+      <Header as="h2">JavaScript Fetch</Header>
       <p style={{ fontSize: "1.1em" }}>
         Send <a href="">this</a> link to your users for them to fill your form
         out on our UI if you don't have your own website or don't want to deal
@@ -96,7 +94,6 @@ xhttp.send();`;
       <Code>
         <Button
           content="Copy"
-          labelPosition="left"
           icon="copy"
           inverted
           style={{ position: "absolute", right: 5, top: 10 }}

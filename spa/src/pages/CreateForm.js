@@ -6,12 +6,17 @@ import {
   Icon,
   Button,
   Segment,
-  Message
+  Message,
+  Loader,
+  Modal,
+  Dimmer,
+  Breadcrumb
 } from "semantic-ui-react";
 import styled from "styled-components";
 import Axios from "axios";
 import { apiUrl } from "../config";
 import Collapsible from "../components/common/Collapse";
+import { Link } from "react-router-dom";
 
 const FormField = styled(Form.Field)`
   max-width: 300px;
@@ -41,12 +46,21 @@ const RuleContainer = styled.div`
   padding-bottom: 8px;
 `;
 
+const SpinnerContainer = styled.div`
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+`;
+
 export default function CreateForm() {
   const [formFieldTypes, setFormFieldTypes] = useState([]);
   const [formFields, setFormFields] = useState([]);
   const [validationTypes, setValidationTypes] = useState([]);
   const [formName, setFormName] = useState("");
   const [formType, setFormType] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [formId, setFormId] = useState(0);
 
   const submitForm = () => {
     const form = {
@@ -55,11 +69,18 @@ export default function CreateForm() {
       Fields: formFields
     };
 
+    setSubmitting(true);
+
     Axios.post(apiUrl + "/Form/Create", form)
       .then(response => {
-        console.log(response);
+        setSuccess(true);
+        setSubmitting(false);
       })
-      .catch(error => {});
+      .catch(error => {
+        setSubmitting(false);
+        setSuccess(false);
+        //set errors
+      });
   };
 
   const addFormField = () => {
@@ -182,6 +203,8 @@ export default function CreateForm() {
     setFormName("");
     setFormFields([]);
     setFormType(0);
+    setSubmitting(false);
+    setSuccess(false);
   };
 
   const validationScriptChange = fieldIndex => (e, { value }) => {
@@ -201,246 +224,319 @@ export default function CreateForm() {
   }, []);
 
   return (
-    <Form inverted>
-      <Header as="h3" style={{ fontSize: "2em" }} inverted>
-        Create a new Form
-      </Header>
-      <Indent>
-        <Group>
-          <p style={{ fontSize: "1.33em" }}>
-            <b>Step 1.</b> Name your form
-          </p>
+    <>
+      <Breadcrumb size="massive">
+        <Breadcrumb.Section link as={Link} to="/form">
+          Forms
+        </Breadcrumb.Section>
+        <Breadcrumb.Divider icon="right chevron" />
+        <Breadcrumb.Section active>Create Form</Breadcrumb.Section>
+      </Breadcrumb>
+      <Form
+        inverted
+        style={{
+          position: "relative",
+          paddingTop: 32
+        }}
+      >
+        <div
+          style={{
+            opacity: submitting ? 0.5 : 1,
+            pointerEvents: submitting ? "none" : "auto"
+          }}
+        >
+          <Header as="h3" style={{ fontSize: "1.5em" }} inverted>
+            Create a new Form
+          </Header>
           <Indent>
-            <FormField>
-              <Form.Field label="Form Name" />
-              <Form.Input
-                placeholder="Form Name"
-                onChange={formNameChange}
-                value={formName}
-              />
-            </FormField>
-          </Indent>
-        </Group>
-        {formName && (
-          <Group>
-            <p style={{ fontSize: "1.33em" }}>
-              <b>Step 2.</b> Select a type of form
-            </p>
-            <Indent>
-              <FormSelect
-                fluid
-                label="Form Type"
-                options={[
-                  { key: 0, text: "JSON Body Post", value: 1 },
-                  { key: 1, text: "HTML Form Post", value: 2 }
-                ]}
-                placeholder="Form Type"
-                onChange={formTypeChange}
-                value={formType}
-              />
-            </Indent>
-          </Group>
-        )}
-        {formType > 0 && (
-          <Group>
-            <p style={{ fontSize: "1.33em" }}>
-              <b>Step 3.</b> Create & Configure your fields
-            </p>
-            <Message color="yellow" style={{ maxWidth: 457 }}>
-              <Message.Header>
-                Fields cannot be changed once the form is created
-              </Message.Header>
-              <p>
-                Make sure you configure them correctly before submitting the
-                form.
+            <Group>
+              <p style={{ fontSize: "1.33em" }}>
+                <b>Step 1.</b> Name your form
               </p>
-            </Message>
-            {formFields.map((formField, fieldIndex) => (
-              <FieldContainer key={fieldIndex}>
-                <Collapsible
-                  header={
-                    <p style={{ fontSize: "1.16em" }}>
-                      <b>Field {fieldIndex + 1}</b>
-                    </p>
-                  }
-                >
-                  <Indent
-                    style={{ borderLeft: "1px solid white", marginLeft: "8px" }}
-                  >
-                    <FormField>
-                      <Form.Field label="Field Name" />
-                      <Form.Input
-                        placeholder="Field Name"
-                        onChange={fieldNameChange(fieldIndex)}
-                        value={formField.Name}
-                      />
-                    </FormField>
+              <Indent>
+                <FormField>
+                  <Form.Field label="Form Name" />
+                  <Form.Input
+                    placeholder="Form Name"
+                    onChange={formNameChange}
+                    value={formName}
+                  />
+                </FormField>
+              </Indent>
+            </Group>
+            {formName && (
+              <Group>
+                <p style={{ fontSize: "1.33em" }}>
+                  <b>Step 2.</b> Select a type of form
+                </p>
+                <Indent>
+                  <FormSelect
+                    fluid
+                    label="Form Type"
+                    options={[
+                      { key: 0, text: "JSON Body Post", value: 1 },
+                      { key: 1, text: "HTML Form Post", value: 2 }
+                    ]}
+                    placeholder="Form Type"
+                    onChange={formTypeChange}
+                    value={formType}
+                  />
+                </Indent>
+              </Group>
+            )}
+            {formType > 0 && (
+              <Group>
+                <p style={{ fontSize: "1.33em" }}>
+                  <b>Step 3.</b> Create & Configure your fields
+                </p>
+                <Message color="yellow" style={{ maxWidth: 464 }}>
+                  <Message.Header>
+                    Warning: fields cannot be changed once the form is created
+                  </Message.Header>
+                  <p>
+                    Make sure you configure them correctly before submitting the
+                    form.
+                  </p>
+                </Message>
+                {formFields.map((formField, fieldIndex) => (
+                  <FieldContainer key={fieldIndex}>
+                    <Collapsible
+                      header={
+                        <p style={{ fontSize: "1.16em" }}>
+                          <b>Field {fieldIndex + 1}</b>
+                        </p>
+                      }
+                    >
+                      <Indent
+                        style={{
+                          borderLeft: "1px solid white",
+                          marginLeft: "8px"
+                        }}
+                      >
+                        <FormField>
+                          <Form.Field label="Field Name" />
+                          <Form.Input
+                            placeholder="Field Name"
+                            onChange={fieldNameChange(fieldIndex)}
+                            value={formField.Name}
+                          />
+                        </FormField>
 
-                    <FormSelect
-                      fluid
-                      label="Field Type"
-                      onChange={fieldTypeChange(fieldIndex)}
-                      options={formFieldTypes.map(
-                        (fieldType, fieldTypeIndex) => ({
-                          key: fieldTypeIndex,
-                          text: fieldType.name,
-                          value: fieldType.formFieldTypeId
-                        })
-                      )}
-                      placeholder="Field Type"
-                    />
+                        <FormSelect
+                          fluid
+                          label="Field Type"
+                          onChange={fieldTypeChange(fieldIndex)}
+                          options={formFieldTypes.map(
+                            (fieldType, fieldTypeIndex) => ({
+                              key: fieldTypeIndex,
+                              text: fieldType.name,
+                              value: fieldType.formFieldTypeId
+                            })
+                          )}
+                          placeholder="Field Type"
+                        />
 
-                    {formField.Type > 0 && (
-                      <FormSelect
-                        fluid
-                        label="Validation Type"
-                        onChange={validationTypeChange(fieldIndex)}
-                        value={formField.Validation.Type}
-                        options={[
-                          {
-                            key: 0,
-                            text: "None",
-                            value: 0
-                          },
-                          {
-                            key: 1,
-                            text: "Basic Rules",
-                            value: 1
-                          },
-                          {
-                            key: 2,
-                            text: "Custom Javascript",
-                            value: 2
-                          }
-                        ]}
-                        placeholder="Validation Type"
-                      />
-                    )}
-                    {formField.Validation.Type === 2 && (
-                      <Indent>
-                        <FormTextArea
-                          label="Custom validation script"
-                          placeholder="JavaScript"
-                          onChange={validationScriptChange(fieldIndex)}
-                        ></FormTextArea>
-                      </Indent>
-                    )}
-                    {formField.Validation.Type === 1 &&
-                      validationTypes[formField.Type] && (
-                        <>
-                          {formField.Validation.Rules.map((rule, ruleIndex) => (
-                            <RuleContainer key={ruleIndex}>
-                              <Collapsible
-                                header={
-                                  <p style={{ fontSize: "1.1em" }}>
-                                    <b>Rule {ruleIndex + 1}</b>
-                                  </p>
-                                }
-                              >
-                                <Indent
-                                  style={{
-                                    borderLeft: "1px solid white",
-                                    marginLeft: "8px"
-                                  }}
-                                >
-                                  <FormSelect
-                                    fluid
-                                    label="Rule Type"
-                                    onChange={ruleTypeChange(
-                                      fieldIndex,
-                                      ruleIndex
-                                    )}
-                                    options={validationTypes[
-                                      formField.Type
-                                    ].map((validationType, index) => ({
-                                      key: index,
-                                      text: validationType.name,
-                                      value:
-                                        validationType.formFieldValidationRuleTypeId
-                                    }))}
-                                    placeholder="Rule Type"
-                                  />
-                                  {formField.Validation.Rules[ruleIndex].Type >
-                                    1 && (
-                                    <FormField>
-                                      <Form.Field label="Rule Value" />
-                                      <Form.Input
-                                        placeholder="Constraint"
-                                        onChange={ruleValueChange(
-                                          fieldIndex,
-                                          ruleIndex
-                                        )}
-                                        value={
-                                          formField.Validation.Rules[ruleIndex]
-                                            .Value
-                                        }
-                                      />
-                                    </FormField>
-                                  )}
-                                </Indent>
-                              </Collapsible>
-                              {ruleIndex ===
-                                formField.Validation.Rules.length - 1 && (
-                                <div style={{ marginTop: 32 }}>
-                                  <Button
-                                    color="yellow"
-                                    onClick={() => addRule(fieldIndex)}
-                                    inverted
-                                  >
-                                    <Icon name="add circle" />
-                                    Add Rule
-                                  </Button>
-                                  {formField.Validation.Rules.length > 1 && (
-                                    <Button
-                                      inverted
-                                      color="red"
-                                      onClick={() => removeRule(fieldIndex)}
+                        {formField.Type > 0 && (
+                          <FormSelect
+                            fluid
+                            label="Validation Type"
+                            onChange={validationTypeChange(fieldIndex)}
+                            value={formField.Validation.Type}
+                            options={[
+                              {
+                                key: 0,
+                                text: "None",
+                                value: 0
+                              },
+                              {
+                                key: 1,
+                                text: "Basic Rules",
+                                value: 1
+                              },
+                              {
+                                key: 2,
+                                text: "Custom Javascript",
+                                value: 2
+                              }
+                            ]}
+                            placeholder="Validation Type"
+                          />
+                        )}
+                        {formField.Validation.Type === 2 && (
+                          <Indent>
+                            <FormTextArea
+                              label="Custom validation script"
+                              placeholder="JavaScript"
+                              onChange={validationScriptChange(fieldIndex)}
+                            ></FormTextArea>
+                          </Indent>
+                        )}
+                        {formField.Validation.Type === 1 &&
+                          validationTypes[formField.Type] && (
+                            <>
+                              {formField.Validation.Rules.map(
+                                (rule, ruleIndex) => (
+                                  <RuleContainer key={ruleIndex}>
+                                    <Collapsible
+                                      header={
+                                        <p style={{ fontSize: "1.1em" }}>
+                                          <b>Rule {ruleIndex + 1}</b>
+                                        </p>
+                                      }
                                     >
-                                      <Icon name="x" /> Remove
-                                    </Button>
-                                  )}
-                                </div>
+                                      <Indent
+                                        style={{
+                                          borderLeft: "1px solid white",
+                                          marginLeft: "8px"
+                                        }}
+                                      >
+                                        <FormSelect
+                                          fluid
+                                          label="Rule Type"
+                                          onChange={ruleTypeChange(
+                                            fieldIndex,
+                                            ruleIndex
+                                          )}
+                                          options={validationTypes[
+                                            formField.Type
+                                          ].map((validationType, index) => ({
+                                            key: index,
+                                            text: validationType.name,
+                                            value:
+                                              validationType.formFieldValidationRuleTypeId
+                                          }))}
+                                          placeholder="Rule Type"
+                                        />
+                                        {formField.Validation.Rules[ruleIndex]
+                                          .Type > 1 && (
+                                          <FormField>
+                                            <Form.Field label="Rule Value" />
+                                            <Form.Input
+                                              placeholder="Constraint"
+                                              onChange={ruleValueChange(
+                                                fieldIndex,
+                                                ruleIndex
+                                              )}
+                                              value={
+                                                formField.Validation.Rules[
+                                                  ruleIndex
+                                                ].Value
+                                              }
+                                            />
+                                          </FormField>
+                                        )}
+                                      </Indent>
+                                    </Collapsible>
+                                    {ruleIndex ===
+                                      formField.Validation.Rules.length - 1 && (
+                                      <div style={{ marginTop: 32 }}>
+                                        <Button
+                                          color="yellow"
+                                          onClick={() => addRule(fieldIndex)}
+                                          icon="add circle"
+                                          content="Add Rule"
+                                          labelPosition="left"
+                                        />
+                                        {formField.Validation.Rules.length >
+                                          1 && (
+                                          <Button
+                                            color="red"
+                                            icon="x"
+                                            content="Remove Rule"
+                                            labelPosition="left"
+                                            onClick={() =>
+                                              removeRule(fieldIndex)
+                                            }
+                                          />
+                                        )}
+                                      </div>
+                                    )}
+                                  </RuleContainer>
+                                )
                               )}
-                            </RuleContainer>
-                          ))}
-                        </>
-                      )}
-                  </Indent>
-                </Collapsible>
-                {fieldIndex === formFields.length - 1 && (
-                  <div style={{ marginTop: 32 }}>
-                    <Button color="blue" onClick={addFormField} inverted>
-                      <Icon name="add circle" />
-                      Add Field
-                    </Button>
-                    {formFields.length > 1 && (
-                      <Button inverted color="red" onClick={removeFormField}>
-                        <Icon name="x" /> Remove
-                      </Button>
+                            </>
+                          )}
+                      </Indent>
+                    </Collapsible>
+                    {fieldIndex === formFields.length - 1 && (
+                      <div style={{ marginTop: 32 }}>
+                        <Button
+                          color="blue"
+                          onClick={addFormField}
+                          icon="add circle"
+                          content="Add Field"
+                          labelPosition="left"
+                        />
+                        {formFields.length > 1 && (
+                          <Button
+                            color="red"
+                            onClick={removeFormField}
+                            icon="x"
+                            content="Remove Field"
+                            labelPosition="left"
+                          />
+                        )}
+                      </div>
                     )}
-                  </div>
-                )}
-              </FieldContainer>
-            ))}
-          </Group>
-        )}
-        {formFields.length > 0 && (
-          <Group>
-            <p style={{ fontSize: "1.33em" }}>
-              <b>Step 4.</b> All Done
-            </p>
+                  </FieldContainer>
+                ))}
+              </Group>
+            )}
+            {formFields.length > 0 && (
+              <Group>
+                <p style={{ fontSize: "1.33em" }}>
+                  <b>Step 4.</b> All Done
+                </p>
 
-            <Indent>
-              <Button color="green" inverted size="large" onClick={submitForm}>
-                Submit Form
-              </Button>
-              <Button color="grey" inverted size="large" onClick={resetForm}>
-                Clear
-              </Button>
-            </Indent>
-          </Group>
-        )}
-      </Indent>
-    </Form>
+                <Indent>
+                  <Button
+                    color="green"
+                    size="large"
+                    icon="check"
+                    labelPosition="left"
+                    content="Submit Form"
+                    onClick={submitForm}
+                  />
+                  <Button
+                    size="large"
+                    icon="x"
+                    labelPosition="left"
+                    content="Clear"
+                    onClick={resetForm}
+                  />
+                </Indent>
+              </Group>
+            )}
+          </Indent>
+        </div>
+      </Form>
+      <Dimmer active={submitting} page>
+        <Loader active={submitting} size="big">
+          Loading
+        </Loader>
+      </Dimmer>
+      <Modal size="tiny" open={success}>
+        <Header icon="check" content="Success" />
+        <Modal.Content>
+          <p>Your form was created.</p>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button
+            icon="edit"
+            labelPosition="right"
+            content="Create Another"
+            onClick={resetForm}
+          />
+          <Button
+            as={Link}
+            to={"/form/" + formId}
+            color="green"
+            icon="file code"
+            labelPosition="right"
+            content="Form Dashboard"
+          />
+        </Modal.Actions>
+      </Modal>
+    </>
   );
 }
