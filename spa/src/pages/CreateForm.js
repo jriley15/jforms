@@ -42,17 +42,6 @@ const FieldContainer = styled.div`
   padding-bottom: 8px;
 `;
 
-const RuleContainer = styled.div`
-  padding-top: 8px;
-  padding-bottom: 8px;
-`;
-
-const SpinnerContainer = styled.div`
-  position: absolute;
-  top: 50vh;
-  left: 50vw;
-`;
-
 export default function CreateForm() {
   const [formFieldTypes, setFormFieldTypes] = useState([]);
   const [formFields, setFormFields] = useState([]);
@@ -88,6 +77,7 @@ export default function CreateForm() {
     const field = {
       Name: "",
       Type: 0,
+      Options: [],
       Validation: {
         Type: 0,
         Script: "",
@@ -141,12 +131,29 @@ export default function CreateForm() {
     setFormFields(fields);
   };
 
+  const addOption = fieldIndex => {
+    const fields = [...formFields];
+    fields[fieldIndex].Options.push({
+      Value: ""
+    });
+    setFormFields(fields);
+  };
+
+  const removeOption = fieldIndex => {
+    const fields = [...formFields];
+    fields[fieldIndex].Options.splice(fields[fieldIndex].Options.length - 1, 1);
+    setFormFields(fields);
+  };
+
   const fieldTypeChange = fieldIndex => (e, { value }) => {
     const fields = [...formFields];
     fields[fieldIndex].Type = value;
     setFormFields(fields);
     resetRules(fieldIndex);
     resetValidationType(fieldIndex);
+    if (formFieldTypes[formFields[fieldIndex].Type].multipleOptions) {
+      addOption(fieldIndex);
+    }
   };
 
   const validationTypeChange = fieldIndex => (e, { value }) => {
@@ -197,6 +204,12 @@ export default function CreateForm() {
   const ruleValueChange = (fieldIndex, ruleIndex) => (e, { value }) => {
     const fields = [...formFields];
     fields[fieldIndex].Validation.Rules[ruleIndex].Value = value;
+    setFormFields(fields);
+  };
+
+  const optionValueChange = (fieldIndex, optionIndex) => (e, { value }) => {
+    const fields = [...formFields];
+    fields[fieldIndex].Options[optionIndex].Value = value;
     setFormFields(fields);
   };
 
@@ -340,6 +353,66 @@ export default function CreateForm() {
                           )}
                           placeholder="Field Type"
                         />
+                        {formField.Type > 0 &&
+                          formFieldTypes[formField.Type].multipleOptions &&
+                          formField.Options.map(
+                            (formFieldOptions, optionIndex) => (
+                              <FieldContainer key={optionIndex}>
+                                <Collapsible
+                                  header={
+                                    <p style={{ fontSize: "1em" }}>
+                                      <b>Option {optionIndex + 1}</b>
+                                    </p>
+                                  }
+                                  key={optionIndex}
+                                >
+                                  <Indent
+                                    style={{
+                                      borderLeft: "1px solid white",
+                                      marginLeft: "8px"
+                                    }}
+                                  >
+                                    <FormField>
+                                      <Form.Field label="Option Value" />
+                                      <Form.Input
+                                        placeholder="Option Value"
+                                        onChange={optionValueChange(
+                                          fieldIndex,
+                                          optionIndex
+                                        )}
+                                        value={
+                                          formField.Options[optionIndex].Value
+                                        }
+                                      />
+                                    </FormField>
+                                  </Indent>
+                                </Collapsible>
+                                {optionIndex ===
+                                  formField.Options.length - 1 && (
+                                  <div
+                                    style={{ marginTop: 32, marginBottom: 32 }}
+                                  >
+                                    <Button
+                                      color="teal"
+                                      onClick={() => addOption(fieldIndex)}
+                                      icon="add circle"
+                                      content="Add Option"
+                                      labelPosition="left"
+                                    />
+                                    {formField.Options.length > 1 && (
+                                      <Button
+                                        color="red"
+                                        onClick={() => removeOption(fieldIndex)}
+                                        icon="x"
+                                        content="Remove Option"
+                                        labelPosition="left"
+                                      />
+                                    )}
+                                  </div>
+                                )}
+                              </FieldContainer>
+                            )
+                          )}
 
                         {formField.Type > 0 && (
                           <FormSelect
@@ -381,7 +454,7 @@ export default function CreateForm() {
                             <>
                               {formField.Validation.Rules.map(
                                 (rule, ruleIndex) => (
-                                  <RuleContainer key={ruleIndex}>
+                                  <FieldContainer key={ruleIndex}>
                                     <Collapsible
                                       header={
                                         <p style={{ fontSize: "1.1em" }}>
@@ -436,7 +509,7 @@ export default function CreateForm() {
                                       formField.Validation.Rules.length - 1 && (
                                       <div style={{ marginTop: 32 }}>
                                         <Button
-                                          color="yellow"
+                                          color="orange"
                                           onClick={() => addRule(fieldIndex)}
                                           icon="add circle"
                                           content="Add Rule"
@@ -456,7 +529,7 @@ export default function CreateForm() {
                                         )}
                                       </div>
                                     )}
-                                  </RuleContainer>
+                                  </FieldContainer>
                                 )
                               )}
                             </>
@@ -535,7 +608,7 @@ export default function CreateForm() {
           />
           <Button
             as={Link}
-            to={"/form/" + formId}
+            to={"/form/dashboard/" + formId}
             color="green"
             icon="file code"
             labelPosition="right"

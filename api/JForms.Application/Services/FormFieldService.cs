@@ -27,11 +27,11 @@ namespace JForms.Application.Services
     public class FormFieldService : IFormFieldService
     {
 
-        private readonly Data.DbContext _dbContext;
+        private readonly Data.DatabaseContext _dbContext;
 
         private readonly IMapper _mapper;
 
-        public FormFieldService(Data.DbContext dbContext, IMapper mapper)
+        public FormFieldService(Data.DatabaseContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;

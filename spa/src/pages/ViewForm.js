@@ -1,83 +1,87 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import { apiUrl } from "../config";
-import { Header, Tab, Breadcrumb, Divider } from "semantic-ui-react";
-import { Link } from "react-router-dom";
-import SnippetsTab from "../components/forms/SnippetsTab";
+import { Header, Form, Segment, Checkbox } from "semantic-ui-react";
+import styled from "styled-components";
+
+const FormField = styled(Form.Field)`
+  max-width: 300px;
+`;
 
 export default function ViewForm({ match: { params } }) {
-  console.log(params);
-
-  const [form, setForm] = useState("");
+  const [form, setForm] = useState({});
 
   useEffect(() => {
-    Axios.get(apiUrl + "/Form/Get", { params: { formId: params.formId } })
-      .then(response => {
+    Axios.get(apiUrl + "/Form/Get", { params: { formId: params.formId } }).then(
+      response => {
         setForm(response.data);
-      })
-      .catch(error => {});
+      }
+    );
+
     return () => {};
   }, []);
 
-  const panes = [
-    {
-      menuItem: "JSON",
-      render: () => (
-        <Tab.Pane>
-          <pre>{JSON.stringify(form, null, 2)}</pre>
-        </Tab.Pane>
-      )
-    },
-    {
-      menuItem: "Snippets",
-      render: () => (
-        <Tab.Pane>
-          <SnippetsTab />
-        </Tab.Pane>
-      )
-    },
-    {
-      menuItem: "Submissions",
-      render: () => <Tab.Pane>Tab 2 Content</Tab.Pane>
-    },
-    {
-      menuItem: "Hooks",
-      render: () => <Tab.Pane>Tab 1 Content</Tab.Pane>
-    },
-    {
-      menuItem: "Edit Form",
-      render: () => <Tab.Pane>Tab 3 Content</Tab.Pane>
-    },
-    {
-      menuItem: "Options",
-      render: () => <Tab.Pane>Tab 1 Content</Tab.Pane>
-    },
-    {
-      menuItem: "Help",
-      render: () => <Tab.Pane>Tab 1 Content</Tab.Pane>
+  const renderInput = field => {
+    switch (field.formFieldType.name) {
+      case "String":
+        return <Form.Input placeholder={field.name} />;
+
+      case "CheckBox":
+        return (
+          <>
+            {field.options.map((option, index) => (
+              <Form.Field>
+                <Checkbox
+                  label={option.value}
+                  name={option.value}
+                  value={option.value}
+                />
+              </Form.Field>
+            ))}
+          </>
+        );
+
+      case "RadioButton":
+        return (
+          <>
+            {field.options.map((option, index) => (
+              <Form.Field>
+                <Checkbox
+                  radio
+                  label={option.value}
+                  name={option.value}
+                  value={option.value}
+                />
+              </Form.Field>
+            ))}
+          </>
+        );
+
+      default:
+        break;
     }
-  ];
+  };
 
   return (
     <>
-      <Breadcrumb size="massive">
-        <Breadcrumb.Section link as={Link} to="/form">
-          Forms
-        </Breadcrumb.Section>
-        <Breadcrumb.Divider icon="right chevron" />
-        <Breadcrumb.Section active>{form.name}</Breadcrumb.Section>
-      </Breadcrumb>
-      <Divider inverted />
-      <Tab
-        panes={panes}
-        style={{ marginTop: 32 }}
-        defaultActiveIndex={1}
-        menu={{
-          attached: true,
-          tabular: true,
-          inverted: true
-        }}
-      />
+      <Header as="h1" inverted>
+        {form.name &&
+          form.name.charAt(0).toUpperCase() + form.name.substring(1)}
+      </Header>
+
+      <Form inverted>
+        {form.fields &&
+          form.fields.map((field, index) => (
+            <FormField key={index}>
+              <Form.Field
+                label={
+                  field.name.charAt(0).toUpperCase() + field.name.substring(1)
+                }
+              />
+              {renderInput(field)}
+            </FormField>
+          ))}
+      </Form>
     </>
   );
 }

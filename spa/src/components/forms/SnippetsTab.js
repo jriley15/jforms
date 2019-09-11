@@ -1,9 +1,12 @@
-import React from "react";
-import { Header, Icon, Button } from "semantic-ui-react";
+import React, { useEffect, useState } from "react";
+import { Header, Icon, Button, Loader } from "semantic-ui-react";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import js from "react-syntax-highlighter/dist/esm/languages/hljs/javascript";
 import dark from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark";
 import styled from "styled-components";
+import Axios from "axios";
+import { apiUrl } from "../../config";
+import { Link } from "react-router-dom";
 
 SyntaxHighlighter.registerLanguage("javascript", js);
 
@@ -11,39 +14,39 @@ const Code = styled.div`
   position: relative;
 `;
 
-export default function SnippetsTab() {
-  var ajaxCode = `var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-  if (this.readyState == 4 && this.status == 200) {
-    document.getElementById("demo").innerHTML = this.responseText;
-  }
-};
-xhttp.open("GET", "ajax_info.txt", true);
-xhttp.send();`;
+export default function SnippetsTab({ formId }) {
+  const [snippets, setSnippets] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const fetchCode = `fetch('http://example.com/movies.json')
-.then(function(response) {
-  return response.json();
-})
-.then(function(myJson) {
-  console.log(JSON.stringify(myJson));
-});`;
+  useEffect(() => {
+    Axios.get(apiUrl + "/Form/GetSnippets", {
+      params: {
+        formId: formId
+      }
+    }).then(response => {
+      setSnippets(response.data);
+      setLoading(false);
+    });
+
+    return () => {};
+  }, []);
 
   return (
     <>
       <Header as="h2">Embedded Form</Header>
       <p style={{ fontSize: "1.1em" }}>
-        Send <a href="">this</a> link to your users for them to fill your form
-        out using our UI if you don't have your own website or don't want to
-        deal with code.
+        Send this link below to your users for them to fill your form out using
+        our UI if you don't have your own website or don't want to deal with
+        code.
+      </p>
+      <p style={{ fontSize: "1.2em" }}>
+        <Link to={"/form/" + formId}>
+          {"https://localhost:3000/form/" + formId}
+        </Link>
       </p>
 
       <Header as="h2">HTML Form</Header>
-      <p style={{ fontSize: "1.1em" }}>
-        Send <a href="">this</a> link to your users for them to fill your form
-        out on our UI if you don't have your own website or don't want to deal
-        with code.
-      </p>
+      <p style={{ fontSize: "1.1em" }}>Copy this into an html file</p>
       <Code>
         <Button
           content="Copy"
@@ -54,20 +57,15 @@ xhttp.send();`;
         />
         <SyntaxHighlighter
           style={dark}
-          customStyle={{ borderRadius: 5, padding: 16 }}
+          customStyle={{ borderRadius: 5, padding: 16, minHeight: 100 }}
         >
-          {`<form>
-  <input type="text" name="name">
-</form>`}
+          {snippets.length > 0 ? snippets.find(s => s.type === 0).code : ""}
         </SyntaxHighlighter>
+        <Loader active={loading} />
       </Code>
 
       <Header as="h2">JavaScript AJAX</Header>
-      <p style={{ fontSize: "1.1em" }}>
-        Send <a href="">this</a> link to your users for them to fill your form
-        out on our UI if you don't have your own website or don't want to deal
-        with code.
-      </p>
+      <p style={{ fontSize: "1.1em" }}>Copy this into your JavaScript</p>
       <Code>
         <Button
           content="Copy"
@@ -79,18 +77,15 @@ xhttp.send();`;
 
         <SyntaxHighlighter
           style={dark}
-          customStyle={{ borderRadius: 5, padding: 16 }}
+          customStyle={{ borderRadius: 5, padding: 16, minHeight: 100 }}
         >
-          {ajaxCode}
+          {snippets.length > 0 ? snippets.find(s => s.type === 1).code : ""}
         </SyntaxHighlighter>
+        <Loader active={loading} />
       </Code>
 
       <Header as="h2">JavaScript Fetch</Header>
-      <p style={{ fontSize: "1.1em" }}>
-        Send <a href="">this</a> link to your users for them to fill your form
-        out on our UI if you don't have your own website or don't want to deal
-        with code.
-      </p>
+      <p style={{ fontSize: "1.1em" }}>Copy this into your JavaScript</p>
       <Code>
         <Button
           content="Copy"
@@ -102,10 +97,11 @@ xhttp.send();`;
 
         <SyntaxHighlighter
           style={dark}
-          customStyle={{ borderRadius: 5, padding: 16 }}
+          customStyle={{ borderRadius: 5, padding: 16, minHeight: 100 }}
         >
-          {fetchCode}
+          {snippets.length > 0 ? snippets.find(s => s.type === 2).code : ""}
         </SyntaxHighlighter>
+        <Loader active={loading} />
       </Code>
     </>
   );

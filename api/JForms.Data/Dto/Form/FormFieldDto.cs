@@ -16,5 +16,7 @@ namespace JForms.Data.Dto.Form
 
         public FormFieldValidationDto Validation { get; set; }
 
+        public ICollection<FormFieldOptionDto> Options { get; set; }
+
     }
 }

@@ -16,19 +16,25 @@ namespace JForms.Application.Helpers
             {
                 Name = formDto.Name,
                 Type = formDto.Type,
-                Fields = formDto.Fields.Select(field => new FormField() {
+                Fields = formDto.Fields.Select(field => new FormField()
+                {
                     Name = field.Name,
                     FormFieldTypeId = (int)field.Type,
-                     Validation = new FormFieldValidation()
-                     {
-                          Script = field.Validation.Script,
-                          Type = field.Validation.Type,
-                           Rules = field.Validation.Rules.Select(rule => new FormFieldValidationRule() { 
-                                Constraint = rule.Value,
-                                FormFieldValidationRuleTypeId = (int)rule.Type 
-                           }).ToList()
+                    Validation = new FormFieldValidation()
+                    {
+                        Script = field.Validation.Script,
+                        Type = field.Validation.Type,
+                        Rules = field.Validation.Rules.Where(rule => rule.Type > 0 && !rule.Value.Equals("")).Select(rule => new FormFieldValidationRule()
+                        {
+                            Constraint = rule.Value,
+                            FormFieldValidationRuleTypeId = (int)rule.Type
+                        }).ToList()
 
-                     }
+                    },
+                    Options = field.Options.Select(option => new FormFieldOption()
+                    {
+                        Value = option.Value
+                    }).ToList()
                 }).ToList() 
             };
 

@@ -32,11 +32,11 @@ namespace JForms.Application.Services
     public class FormService : IFormService
     {
 
-        private readonly Data.DbContext _dbContext;
+        private readonly Data.DatabaseContext _dbContext;
 
         private readonly IMapper _mapper;
 
-        public FormService(Data.DbContext dbContext, IMapper mapper)
+        public FormService(Data.DatabaseContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -60,7 +60,14 @@ namespace JForms.Application.Services
 
         public async Task<Form> Get(int formId)
         {
-            return await _dbContext.Forms.Include(f => f.Fields).ThenInclude(f => f.Validation).ThenInclude(v => v.Rules).SingleOrDefaultAsync(f => f.FormId == formId);
+            return await _dbContext.Forms.Include(f => f.Fields).
+                    ThenInclude(f => f.Validation).
+                    ThenInclude(v => v.Rules)
+                .Include(f => f.Fields)
+                    .ThenInclude(f => f.Options)
+                .Include(f => f.Fields)
+                    .ThenInclude(f => f.FormFieldType)
+                .SingleOrDefaultAsync(f => f.FormId == formId);
         }
 
         public Task<SearchFormResponseDto> Search(SearchFormDto search)

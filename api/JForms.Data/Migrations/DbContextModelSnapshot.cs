@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace JForms.Data.Migrations
 {
-    [DbContext(typeof(DbContext))]
+    [DbContext(typeof(DatabaseContext))]
     partial class DbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -131,20 +131,26 @@ namespace JForms.Data.Migrations
                         new
                         {
                             FormFieldTypeId = 4,
-                            MultipleOptions = false,
+                            MultipleOptions = true,
                             Name = "RadioButton"
                         },
                         new
                         {
                             FormFieldTypeId = 5,
-                            MultipleOptions = false,
+                            MultipleOptions = true,
                             Name = "DropDown"
                         },
                         new
                         {
                             FormFieldTypeId = 6,
-                            MultipleOptions = false,
+                            MultipleOptions = true,
                             Name = "MultiSelect"
+                        },
+                        new
+                        {
+                            FormFieldTypeId = 7,
+                            MultipleOptions = false,
+                            Name = "CheckBox"
                         });
                 });
 

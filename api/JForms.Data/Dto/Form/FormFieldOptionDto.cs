@@ -4,7 +4,8 @@ using System.Text;
 
 namespace JForms.Data.Dto.Form
 {
-    public class FormDto
+    public class FormFieldOptionDto
     {
+        public string Value { get; set; }
     }
 }

@@ -59,7 +59,7 @@ export default function ViewForms() {
             <Table.Cell>1,243</Table.Cell>
             <Table.Cell>None</Table.Cell>
             <Table.Cell>
-              <Button as={Link} to="/form/1" compact>
+              <Button as={Link} to="/form/dashboard/1" compact>
                 View
               </Button>
             </Table.Cell>
@@ -69,7 +69,7 @@ export default function ViewForms() {
             <Table.Cell>2,345</Table.Cell>
             <Table.Cell>Requires call</Table.Cell>
             <Table.Cell>
-              <Button as={Link} to="/form/1" compact>
+              <Button as={Link} to="/form/dashboard/1" compact>
                 View
               </Button>
             </Table.Cell>
@@ -79,7 +79,7 @@ export default function ViewForms() {
             <Table.Cell>656,534</Table.Cell>
             <Table.Cell>None</Table.Cell>
             <Table.Cell>
-              <Button as={Link} to="/form/1" compact>
+              <Button as={Link} to="/form/dashboard/1" compact>
                 View
               </Button>
             </Table.Cell>

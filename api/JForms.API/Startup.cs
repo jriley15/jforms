@@ -26,11 +26,12 @@ namespace JForms
 
             services.AddAutoMapper(typeof(MappingProfile));
 
-            services.AddDbContext<JForms.Data.DbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("postgres")));
+            services.AddDbContext<JForms.Data.DatabaseContext>(options => options.UseNpgsql(Configuration.GetConnectionString("postgres")));
 
             services.AddTransient<ISubmitService, SubmitService>();
             services.AddTransient<IFormService, FormService>();
             services.AddTransient<IFormFieldService, FormFieldService>();
+            services.AddTransient<IFormSnippetservice, FormSnippetService>();
 
         }
 

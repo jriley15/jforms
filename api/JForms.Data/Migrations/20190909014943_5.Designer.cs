@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace JForms.Data.Migrations
 {
-    [DbContext(typeof(DbContext))]
+    [DbContext(typeof(DatabaseContext))]
     [Migration("20190909014943_5")]
     partial class _5
     {

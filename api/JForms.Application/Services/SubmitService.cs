@@ -27,11 +27,11 @@ namespace JForms.Application.Services
     public class SubmitService : ISubmitService
     {
 
-        private readonly Data.DbContext _dbContext;
+        private readonly Data.DatabaseContext _dbContext;
 
         private readonly IMapper _mapper;
 
-        public SubmitService(Data.DbContext dbContext, IMapper mapper)
+        public SubmitService(Data.DatabaseContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -45,6 +45,11 @@ namespace JForms.Application.Services
 
 
             //TODO: check origin from http headers with allowed origins from form
+
+            //TODO: validate all fields here
+
+
+
 
             //create a new submission entity
             var submissionEntity = new FormSubmission();

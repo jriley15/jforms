@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace JForms.Data
 {
-    public class DbContext : Microsoft.EntityFrameworkCore.DbContext
+    public class DatabaseContext : Microsoft.EntityFrameworkCore.DbContext
     {
 
         public DbSet<Form> Forms { get; set; }
@@ -20,7 +20,7 @@ namespace JForms.Data
         public DbSet<User> Users { get; set; }
 
 
-        public DbContext(DbContextOptions<DbContext> options) : base(options)
+        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
 
 
@@ -44,14 +44,24 @@ namespace JForms.Data
 
             foreach (FieldType fieldType in (FieldType[])Enum.GetValues(typeof(FieldType)))
             {
-                modelBuilder.Entity<FormFieldType>().HasData(new FormFieldType { FormFieldTypeId = (int)fieldType, Name = fieldType.ToString() });
+                var Type = new FormFieldType { FormFieldTypeId = (int)fieldType, Name = fieldType.ToString() };
+            
+                //field types that have multiple options
+                if (fieldType == FieldType.DropDown ||
+                    fieldType == FieldType.RadioButton ||
+                    fieldType == FieldType.MultiSelect)
+                {
+                    Type.MultipleOptions = true;
+                }
+
+                modelBuilder.Entity<FormFieldType>().HasData(Type);
+
             }
 
             foreach (RuleType ruleType in (RuleType[])Enum.GetValues(typeof(RuleType)))
             {
                 modelBuilder.Entity<FormFieldValidationRuleType>().HasData(new FormFieldValidationRuleType { FormFieldValidationRuleTypeId = (int)ruleType, Name = ruleType.ToString() });
             }
-
 
             //String validation types
             modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.String, FormValidationRuleTypeId = (int)RuleType.Required });
@@ -62,6 +72,9 @@ namespace JForms.Data
             modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.Number, FormValidationRuleTypeId = (int)RuleType.Required });
             modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.Number, FormValidationRuleTypeId = (int)RuleType.Minimum_Value });
             modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.Number, FormValidationRuleTypeId = (int)RuleType.Maxmimum__Value });
+
+
+
 
         }
 
