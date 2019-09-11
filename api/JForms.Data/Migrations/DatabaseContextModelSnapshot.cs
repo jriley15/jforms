@@ -3,17 +3,15 @@ using System;
 using JForms.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace JForms.Data.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20190910231343_7")]
-    partial class _7
+    partial class DatabaseContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -146,7 +144,7 @@ namespace JForms.Data.Migrations
                         {
                             FormFieldTypeId = 6,
                             MultipleOptions = true,
-                            Name = "MultiSelect"
+                            Name = "CheckBox"
                         });
                 });
 

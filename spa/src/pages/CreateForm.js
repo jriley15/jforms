@@ -146,14 +146,14 @@ export default function CreateForm() {
   };
 
   const fieldTypeChange = fieldIndex => (e, { value }) => {
+    if (formFieldTypes[formFields[fieldIndex].Type].multipleOptions) {
+      addOption(fieldIndex);
+    }
     const fields = [...formFields];
     fields[fieldIndex].Type = value;
     setFormFields(fields);
     resetRules(fieldIndex);
     resetValidationType(fieldIndex);
-    if (formFieldTypes[formFields[fieldIndex].Type].multipleOptions) {
-      addOption(fieldIndex);
-    }
   };
 
   const validationTypeChange = fieldIndex => (e, { value }) => {

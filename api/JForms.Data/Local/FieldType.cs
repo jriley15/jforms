@@ -12,7 +12,6 @@ namespace JForms.Data.Local
         Date,
         RadioButton,
         DropDown,
-        MultiSelect,
         CheckBox
     }
 

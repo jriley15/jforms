@@ -49,7 +49,7 @@ namespace JForms.Data
                 //field types that have multiple options
                 if (fieldType == FieldType.DropDown ||
                     fieldType == FieldType.RadioButton ||
-                    fieldType == FieldType.MultiSelect)
+                    fieldType == FieldType.CheckBox)
                 {
                     Type.MultipleOptions = true;
                 }

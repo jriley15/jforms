@@ -13,7 +13,8 @@ namespace JForms.Data.Migrations
                 {
                     FormFieldTypeId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    MultipleOptions = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -35,16 +36,16 @@ namespace JForms.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FormValidationRuleType",
+                name: "FormFieldValidationRuleTypes",
                 columns: table => new
                 {
-                    FormValidationRuleTypeId = table.Column<int>(nullable: false)
+                    FormFieldValidationRuleTypeId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FormValidationRuleType", x => x.FormValidationRuleTypeId);
+                    table.PrimaryKey("PK_FormFieldValidationRuleTypes", x => x.FormFieldValidationRuleTypeId);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,38 +77,38 @@ namespace JForms.Data.Migrations
                         principalColumn: "FormFieldTypeId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FormFieldTypeRuleType_FormValidationRuleType_FormValidation~",
+                        name: "FK_FormFieldTypeRuleType_FormFieldValidationRuleTypes_FormVali~",
                         column: x => x.FormValidationRuleTypeId,
-                        principalTable: "FormValidationRuleType",
-                        principalColumn: "FormValidationRuleTypeId",
+                        principalTable: "FormFieldValidationRuleTypes",
+                        principalColumn: "FormFieldValidationRuleTypeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "FormValidationRule",
+                name: "FormFieldValidationRule",
                 columns: table => new
                 {
-                    FormValidationRuleId = table.Column<int>(nullable: false)
+                    FormFieldValidationRuleId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TypeFormValidationRuleTypeId = table.Column<int>(nullable: true),
+                    FormFieldValidationRuleTypeId = table.Column<int>(nullable: false),
                     Constraint = table.Column<string>(nullable: true),
                     FormFieldValidationId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FormValidationRule", x => x.FormValidationRuleId);
+                    table.PrimaryKey("PK_FormFieldValidationRule", x => x.FormFieldValidationRuleId);
                     table.ForeignKey(
-                        name: "FK_FormValidationRule_FormFieldValidation_FormFieldValidationId",
+                        name: "FK_FormFieldValidationRule_FormFieldValidation_FormFieldValida~",
                         column: x => x.FormFieldValidationId,
                         principalTable: "FormFieldValidation",
                         principalColumn: "FormFieldValidationId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_FormValidationRule_FormValidationRuleType_TypeFormValidatio~",
-                        column: x => x.TypeFormValidationRuleTypeId,
-                        principalTable: "FormValidationRuleType",
-                        principalColumn: "FormValidationRuleTypeId",
-                        onDelete: ReferentialAction.Restrict);
+                        name: "FK_FormFieldValidationRule_FormFieldValidationRuleTypes_FormFi~",
+                        column: x => x.FormFieldValidationRuleTypeId,
+                        principalTable: "FormFieldValidationRuleTypes",
+                        principalColumn: "FormFieldValidationRuleTypeId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -138,7 +139,7 @@ namespace JForms.Data.Migrations
                     FormFieldId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: true),
-                    TypeFormFieldTypeId = table.Column<int>(nullable: true),
+                    FormFieldTypeId = table.Column<int>(nullable: false),
                     ValidationFormFieldValidationId = table.Column<int>(nullable: true),
                     FormId = table.Column<int>(nullable: true)
                 },
@@ -146,16 +147,16 @@ namespace JForms.Data.Migrations
                 {
                     table.PrimaryKey("PK_FormField", x => x.FormFieldId);
                     table.ForeignKey(
+                        name: "FK_FormField_FormFieldTypes_FormFieldTypeId",
+                        column: x => x.FormFieldTypeId,
+                        principalTable: "FormFieldTypes",
+                        principalColumn: "FormFieldTypeId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_FormField_Forms_FormId",
                         column: x => x.FormId,
                         principalTable: "Forms",
                         principalColumn: "FormId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_FormField_FormFieldTypes_TypeFormFieldTypeId",
-                        column: x => x.TypeFormFieldTypeId,
-                        principalTable: "FormFieldTypes",
-                        principalColumn: "FormFieldTypeId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_FormField_FormFieldValidation_ValidationFormFieldValidation~",
@@ -254,41 +255,54 @@ namespace JForms.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "FormFieldTypes",
-                columns: new[] { "FormFieldTypeId", "Name" },
+                columns: new[] { "FormFieldTypeId", "MultipleOptions", "Name" },
                 values: new object[,]
                 {
-                    { 1, "String" },
-                    { 2, "Number" },
-                    { 3, "Date" },
-                    { 4, "RadioButton" },
-                    { 5, "DropDown" },
-                    { 6, "MultiSelect" }
+                    { 1, false, "String" },
+                    { 2, false, "Number" },
+                    { 3, false, "Date" },
+                    { 4, true, "RadioButton" },
+                    { 5, true, "DropDown" },
+                    { 6, true, "CheckBox" }
                 });
 
             migrationBuilder.InsertData(
-                table: "FormValidationRuleType",
-                columns: new[] { "FormValidationRuleTypeId", "Name" },
+                table: "FormFieldValidationRuleTypes",
+                columns: new[] { "FormFieldValidationRuleTypeId", "Name" },
                 values: new object[,]
                 {
                     { 1, "Required" },
-                    { 2, "NumberMin" },
-                    { 3, "NumberMax" },
-                    { 4, "StringMin" },
-                    { 5, "StringMax" },
-                    { 6, "DateMin" },
-                    { 7, "DateMax" },
+                    { 2, "Minimum_Value" },
+                    { 3, "Maxmimum__Value" },
+                    { 4, "Minimum_Length" },
+                    { 5, "Maxmimum_Length" },
+                    { 6, "Minimum_Date" },
+                    { 7, "Maxmimum_Date" },
                     { 8, "Regex" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "FormFieldTypeRuleType",
+                columns: new[] { "FormFieldTypeId", "FormValidationRuleTypeId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 2, 1 },
+                    { 2, 2 },
+                    { 2, 3 },
+                    { 1, 4 },
+                    { 1, 5 }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FormField_FormFieldTypeId",
+                table: "FormField",
+                column: "FormFieldTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FormField_FormId",
                 table: "FormField",
                 column: "FormId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FormField_TypeFormFieldTypeId",
-                table: "FormField",
-                column: "TypeFormFieldTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FormField_ValidationFormFieldValidationId",
@@ -304,6 +318,16 @@ namespace JForms.Data.Migrations
                 name: "IX_FormFieldTypeRuleType_FormValidationRuleTypeId",
                 table: "FormFieldTypeRuleType",
                 column: "FormValidationRuleTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FormFieldValidationRule_FormFieldValidationId",
+                table: "FormFieldValidationRule",
+                column: "FormFieldValidationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FormFieldValidationRule_FormFieldValidationRuleTypeId",
+                table: "FormFieldValidationRule",
+                column: "FormFieldValidationRuleTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FormOrigin_FormId",
@@ -329,16 +353,6 @@ namespace JForms.Data.Migrations
                 name: "IX_FormSubmissionValue_SubmissionFormSubmissionId",
                 table: "FormSubmissionValue",
                 column: "SubmissionFormSubmissionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FormValidationRule_FormFieldValidationId",
-                table: "FormValidationRule",
-                column: "FormFieldValidationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FormValidationRule_TypeFormValidationRuleTypeId",
-                table: "FormValidationRule",
-                column: "TypeFormValidationRuleTypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -350,22 +364,22 @@ namespace JForms.Data.Migrations
                 name: "FormFieldTypeRuleType");
 
             migrationBuilder.DropTable(
+                name: "FormFieldValidationRule");
+
+            migrationBuilder.DropTable(
                 name: "FormOrigin");
 
             migrationBuilder.DropTable(
                 name: "FormSubmissionValue");
 
             migrationBuilder.DropTable(
-                name: "FormValidationRule");
+                name: "FormFieldValidationRuleTypes");
 
             migrationBuilder.DropTable(
                 name: "FormField");
 
             migrationBuilder.DropTable(
                 name: "FormSubmission");
-
-            migrationBuilder.DropTable(
-                name: "FormValidationRuleType");
 
             migrationBuilder.DropTable(
                 name: "FormFieldTypes");
