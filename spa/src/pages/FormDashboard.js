@@ -6,8 +6,6 @@ import { Link } from "react-router-dom";
 import SnippetsTab from "../components/forms/SnippetsTab";
 
 export default function FormDashboard({ match: { params } }) {
-  console.log(params);
-
   const [form, setForm] = useState("");
 
   useEffect(() => {
@@ -23,7 +21,7 @@ export default function FormDashboard({ match: { params } }) {
     {
       menuItem: "JSON",
       render: () => (
-        <Tab.Pane>
+        <Tab.Pane inverted>
           <pre>{JSON.stringify(form, null, 2)}</pre>
         </Tab.Pane>
       )
@@ -31,30 +29,30 @@ export default function FormDashboard({ match: { params } }) {
     {
       menuItem: "Snippets",
       render: () => (
-        <Tab.Pane>
+        <Tab.Pane inverted>
           <SnippetsTab formId={params.formId} />
         </Tab.Pane>
       )
     },
     {
       menuItem: "Submissions",
-      render: () => <Tab.Pane>Tab 2 Content</Tab.Pane>
+      render: () => <Tab.Pane inverted>Tab 2 Content</Tab.Pane>
     },
     {
       menuItem: "Hooks",
-      render: () => <Tab.Pane>Tab 1 Content</Tab.Pane>
+      render: () => <Tab.Pane inverted>Tab 1 Content</Tab.Pane>
     },
     {
       menuItem: "Edit Form",
-      render: () => <Tab.Pane>Tab 3 Content</Tab.Pane>
+      render: () => <Tab.Pane inverted>Tab 3 Content</Tab.Pane>
     },
     {
       menuItem: "Options",
-      render: () => <Tab.Pane>Tab 1 Content</Tab.Pane>
+      render: () => <Tab.Pane inverted>Tab 1 Content</Tab.Pane>
     },
     {
       menuItem: "Help",
-      render: () => <Tab.Pane>Tab 1 Content</Tab.Pane>
+      render: () => <Tab.Pane inverted>Tab 1 Content</Tab.Pane>
     }
   ];
 
@@ -78,7 +76,8 @@ export default function FormDashboard({ match: { params } }) {
         menu={{
           attached: true,
           tabular: true,
-          inverted: true
+          inverted: true,
+          style: { border: "1px solid #555", borderRadius: 3 }
         }}
       />
     </>

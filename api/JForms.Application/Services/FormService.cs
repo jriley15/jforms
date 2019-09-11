@@ -45,7 +45,7 @@ namespace JForms.Application.Services
 
         public async Task<Response> Create(CreateFormDto form)
         {
-            var response = new Response();
+            var response = new CreateFormResponseDto();
 
             var formEntity = FormHelper.MapForm(form);//_mapper.Map<Form>(form);
 
@@ -54,6 +54,7 @@ namespace JForms.Application.Services
             var affectedRows = await _dbContext.SaveChangesAsync();
 
             response.Success = true;
+            response.FormId = formEntity.FormId;
 
             return response;
         }

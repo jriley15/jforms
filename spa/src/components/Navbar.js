@@ -41,6 +41,8 @@ export default function Navbar() {
             toggle={false}
             as={Link}
             to="/form"
+            color="teal"
+            inverted
           />
           <Button
             inverted
@@ -50,8 +52,6 @@ export default function Navbar() {
             Log in
           </Button>
           <Button
-            as={Link}
-            to="/"
             inverted
             style={{ marginLeft: "0.5em" }}
             onClick={() => setRegisterOpen(true)}

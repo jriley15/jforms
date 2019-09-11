@@ -65,6 +65,7 @@ export default function CreateForm() {
       .then(response => {
         setSuccess(true);
         setSubmitting(false);
+        setFormId(response.data.formId);
       })
       .catch(error => {
         setSubmitting(false);
@@ -138,6 +139,11 @@ export default function CreateForm() {
     });
     setFormFields(fields);
   };
+  const resetOptions = fieldIndex => {
+    const fields = [...formFields];
+    fields[fieldIndex].Options = [];
+    setFormFields(fields);
+  };
 
   const removeOption = fieldIndex => {
     const fields = [...formFields];
@@ -146,14 +152,16 @@ export default function CreateForm() {
   };
 
   const fieldTypeChange = fieldIndex => (e, { value }) => {
-    if (formFieldTypes[formFields[fieldIndex].Type].multipleOptions) {
-      addOption(fieldIndex);
-    }
     const fields = [...formFields];
     fields[fieldIndex].Type = value;
     setFormFields(fields);
     resetRules(fieldIndex);
     resetValidationType(fieldIndex);
+    resetOptions(fieldIndex);
+
+    if (formFieldTypes[value - 1].multipleOptions) {
+      addOption(fieldIndex);
+    }
   };
 
   const validationTypeChange = fieldIndex => (e, { value }) => {
@@ -354,7 +362,7 @@ export default function CreateForm() {
                           placeholder="Field Type"
                         />
                         {formField.Type > 0 &&
-                          formFieldTypes[formField.Type].multipleOptions &&
+                          formFieldTypes[formField.Type - 1].multipleOptions &&
                           formField.Options.map(
                             (formFieldOptions, optionIndex) => (
                               <FieldContainer key={optionIndex}>

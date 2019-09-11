@@ -58,6 +58,11 @@ namespace JForms.Application.Services
                         HTML.AppendLine("<input id='" + field.Name + "' type='number' name='" + field.Name + "' />");
                         break;
 
+                    case (int)FieldType.Date:
+                        HTML.AppendTab();
+                        HTML.AppendLine("<input id='" + field.Name + "' type='date' name='" + field.Name + "' />");
+                        break;
+
                     case (int)FieldType.RadioButton:
                         int radioIndex = 0;
                         foreach (FormFieldOption option in field.Options)
@@ -112,7 +117,7 @@ namespace JForms.Application.Services
             Ajax.AppendTab();
             Ajax.AppendLine("// success");
             Ajax.AppendTab();
-            Ajax.AppendLine("}    else    {");
+            Ajax.AppendLine("} else {");
             Ajax.AppendTab();
             Ajax.AppendTab();
             Ajax.AppendLine("// failed");
@@ -126,7 +131,7 @@ namespace JForms.Application.Services
             foreach (FormField field in form.Fields)
             {
                 Ajax.AppendTab();
-                Ajax.AppendLine(field.Name + ": ''," + (field.Options.Count > 0 ? " // options: (" + String.Join(", ", field.Options.Select(o => o.Value)) + ")" : " // Type: " + (FieldType)field.FormFieldTypeId));
+                Ajax.AppendLine(field.Name.Replace(" ", "") + ": ''," + (field.Options.Count > 0 ? " // options: (" + String.Join(", ", field.Options.Select(o => o.Value)) + ")" : " // Type: " + (FieldType)field.FormFieldTypeId));
             }
 
             Ajax.AppendLine("}));");
@@ -147,7 +152,7 @@ namespace JForms.Application.Services
             {
                 Fetch.AppendTab();
                 Fetch.AppendTab();
-                Fetch.AppendLine(field.Name + ": ''," + (field.Options.Count > 0 ? " // options: ("+String.Join(", ",field.Options.Select(o => o.Value))+")" : " // Type: " + (FieldType)field.FormFieldTypeId));
+                Fetch.AppendLine(field.Name.Replace(" ", "") + ": ''," + (field.Options.Count > 0 ? " // options: ("+String.Join(", ",field.Options.Select(o => o.Value))+")" : " // Type: " + (FieldType)field.FormFieldTypeId));
             }
 
             Fetch.AppendTab();

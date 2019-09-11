@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Header, Icon, Button, Loader } from "semantic-ui-react";
+import { Header, Icon, Button, Loader, Divider } from "semantic-ui-react";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import js from "react-syntax-highlighter/dist/esm/languages/hljs/javascript";
 import dark from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark";
@@ -12,6 +12,10 @@ SyntaxHighlighter.registerLanguage("javascript", js);
 
 const Code = styled.div`
   position: relative;
+`;
+const Spacer = styled.div`
+  padding-top: 8px;
+  padding-bottom: 8px;
 `;
 
 export default function SnippetsTab({ formId }) {
@@ -33,7 +37,9 @@ export default function SnippetsTab({ formId }) {
 
   return (
     <>
-      <Header as="h2">Embedded Form</Header>
+      <Header as="h2" style={{ paddingTop: 16 }}>
+        Embedded Form
+      </Header>
       <p style={{ fontSize: "1.1em" }}>
         Send this link below to your users for them to fill your form out using
         our UI if you don't have your own website or don't want to deal with
@@ -45,6 +51,7 @@ export default function SnippetsTab({ formId }) {
         </Link>
       </p>
 
+      <Divider inverted />
       <Header as="h2">HTML Form</Header>
       <p style={{ fontSize: "1.1em" }}>Copy this into an html file</p>
       <Code>
@@ -64,6 +71,7 @@ export default function SnippetsTab({ formId }) {
         <Loader active={loading} />
       </Code>
 
+      <Divider inverted />
       <Header as="h2">JavaScript AJAX</Header>
       <p style={{ fontSize: "1.1em" }}>Copy this into your JavaScript</p>
       <Code>
@@ -84,6 +92,7 @@ export default function SnippetsTab({ formId }) {
         <Loader active={loading} />
       </Code>
 
+      <Divider inverted />
       <Header as="h2">JavaScript Fetch</Header>
       <p style={{ fontSize: "1.1em" }}>Copy this into your JavaScript</p>
       <Code>
