@@ -12,10 +12,13 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Login from "./Login";
 import Register from "./Register";
+import useAuth from "../hooks/useAuth";
 
 export default function Navbar() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
+
+  const { authState, logout } = useAuth();
 
   return (
     <Segment
@@ -35,29 +38,43 @@ export default function Navbar() {
           About
         </Menu.Item>
         <Menu.Item position="right">
-          <Button
-            icon="file alternate"
-            content="Forms"
-            toggle={false}
-            as={Link}
-            to="/form"
-            color="teal"
-            inverted
-          />
-          <Button
-            inverted
-            style={{ marginLeft: "0.5em" }}
-            onClick={() => setLoginOpen(true)}
-          >
-            Log in
-          </Button>
-          <Button
-            inverted
-            style={{ marginLeft: "0.5em" }}
-            onClick={() => setRegisterOpen(true)}
-          >
-            Sign up
-          </Button>
+          {!authState.authenticated ? (
+            <>
+              <Button
+                inverted
+                style={{ marginLeft: "0.5em" }}
+                onClick={() => setLoginOpen(true)}
+              >
+                Log in
+              </Button>
+              <Button
+                inverted
+                style={{ marginLeft: "0.5em" }}
+                onClick={() => setRegisterOpen(true)}
+              >
+                Sign up
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                icon="file alternate"
+                content="Forms"
+                toggle={false}
+                as={Link}
+                to="/form"
+                color="teal"
+                inverted
+              />
+              <Button
+                inverted
+                style={{ marginLeft: "0.5em" }}
+                onClick={logout}
+              >
+                Log out
+              </Button>
+            </>
+          )}
         </Menu.Item>
       </Menu>
       <Login
