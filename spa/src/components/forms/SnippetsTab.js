@@ -4,9 +4,8 @@ import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import js from "react-syntax-highlighter/dist/esm/languages/hljs/javascript";
 import dark from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark";
 import styled from "styled-components";
-import Axios from "axios";
-import { apiUrl } from "../../config";
 import { Link } from "react-router-dom";
+import useRequest from "../../hooks/useRequest";
 
 SyntaxHighlighter.registerLanguage("javascript", js);
 
@@ -21,17 +20,18 @@ const Spacer = styled.div`
 export default function SnippetsTab({ formId }) {
   const [snippets, setSnippets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { get } = useRequest();
 
   useEffect(() => {
-    Axios.get(apiUrl + "/Form/GetSnippets", {
-      params: {
-        formId: formId
-      }
-    }).then(response => {
-      setSnippets(response.data.data);
-      setLoading(false);
-    });
+    async function getSnippets() {
+      let response = await get("/Form/GetSnippets", { formId: formId });
 
+      if (response.success) {
+        setSnippets(response.data);
+        setLoading(false);
+      }
+    }
+    getSnippets();
     return () => {};
   }, []);
 

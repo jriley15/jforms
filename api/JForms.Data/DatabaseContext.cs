@@ -1,5 +1,6 @@
 ﻿using JForms.Data.Entity;
 using JForms.Data.Local;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace JForms.Data
 {
-    public class DatabaseContext : Microsoft.EntityFrameworkCore.DbContext
+    public class DatabaseContext : IdentityDbContext<ApplicationUser>
     {
 
         public DbSet<Form> Forms { get; set; }
@@ -16,8 +17,6 @@ namespace JForms.Data
         public DbSet<FormFieldType> FormFieldTypes { get; set; }
 
         public DbSet<FormFieldValidationRuleType> FormFieldValidationRuleTypes { get; set; }
-
-        public DbSet<User> Users { get; set; }
 
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
@@ -28,6 +27,8 @@ namespace JForms.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<FormFieldTypeRuleType>()
                 .HasKey(pt => new { pt.FormFieldTypeId, pt.FormValidationRuleTypeId });
 

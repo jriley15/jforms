@@ -12,7 +12,7 @@ namespace JForms.Data.Entity
         public int FormId { get; set; }
 
         //user id
-        public User User { get; set; }
+        public ApplicationUser User { get; set; }
 
         //name
         public string Name { get; set; }

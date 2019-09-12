@@ -6,7 +6,6 @@ import FormDashboard from "../pages/FormDashboard";
 import ViewForm from "../pages/ViewForm";
 
 export default function Form({ match: { url } }) {
-  console.log(url);
   return (
     <Switch>
       <Route exact path={url} component={ViewForms} />

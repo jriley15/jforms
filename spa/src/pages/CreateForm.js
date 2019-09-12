@@ -14,10 +14,10 @@ import {
   Divider
 } from "semantic-ui-react";
 import styled from "styled-components";
-import Axios from "axios";
 import { apiUrl } from "../config";
 import Collapsible from "../components/common/Collapse";
 import { Link } from "react-router-dom";
+import useRequest from "../hooks/useRequest";
 
 const FormField = styled(Form.Field)`
   max-width: 300px;
@@ -51,8 +51,9 @@ export default function CreateForm() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [formId, setFormId] = useState(0);
+  const { get, post } = useRequest();
 
-  const submitForm = () => {
+  const submitForm = async () => {
     const form = {
       Name: formName,
       Type: formType,
@@ -61,17 +62,16 @@ export default function CreateForm() {
 
     setSubmitting(true);
 
-    Axios.post(apiUrl + "/Form/Create", form)
-      .then(response => {
-        setSuccess(true);
-        setSubmitting(false);
-        setFormId(response.data.data);
-      })
-      .catch(error => {
-        setSubmitting(false);
-        setSuccess(false);
-        //set errors
-      });
+    let response = await post("/Form/Create", form);
+
+    if (response.success) {
+      setSuccess(true);
+      setSubmitting(false);
+      setFormId(response.data);
+    } else {
+      setSubmitting(false);
+      setSuccess(false);
+    }
   };
 
   const addFormField = () => {
@@ -164,7 +164,7 @@ export default function CreateForm() {
     }
   };
 
-  const validationTypeChange = fieldIndex => (e, { value }) => {
+  const validationTypeChange = fieldIndex => async (e, { value }) => {
     setValidationType(fieldIndex, value);
 
     if (value === 1) {
@@ -172,19 +172,15 @@ export default function CreateForm() {
       addRule(fieldIndex);
       const types = [...validationTypes];
 
-      Axios.get(apiUrl + "/FormField/GetValidationTypes", {
-        params: {
-          fieldType: formFields[fieldIndex].Type
-        }
-      })
-        .then(response => {
-          let validTypes = response.data.data;
+      let response = await get("/FormField/GetValidationTypes", {
+        fieldType: formFields[fieldIndex].Type
+      });
 
-          types[formFields[fieldIndex].Type] = validTypes;
-
-          setValidationTypes(types);
-        })
-        .catch(error => {});
+      if (response.success) {
+        let validTypes = response.data;
+        types[formFields[fieldIndex].Type] = validTypes;
+        setValidationTypes(types);
+      }
     }
   };
 
@@ -236,12 +232,13 @@ export default function CreateForm() {
   };
 
   useEffect(() => {
-    Axios.get(apiUrl + "/FormField/GetTypes")
-      .then(response => {
-        setFormFieldTypes(response.data.data);
-      })
-      .catch(error => {});
-
+    async function getFieldTypes() {
+      let response = await get("/FormField/GetTypes", {});
+      if (response.success) {
+        setFormFieldTypes(response.data);
+      }
+    }
+    getFieldTypes();
     return () => {};
   }, []);
 

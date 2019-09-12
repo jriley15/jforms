@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Axios from "axios";
-import { apiUrl } from "../config";
 import { Header, Form, Segment, Checkbox, Divider } from "semantic-ui-react";
 import styled from "styled-components";
 import { DateInput } from "semantic-ui-calendar-react";
+import useRequest from "../hooks/useRequest";
 
 const FormField = styled(Form.Field)`
   max-width: 300px;
@@ -16,14 +15,14 @@ const Indent = styled.div`
 
 export default function ViewForm({ match: { params } }) {
   const [form, setForm] = useState({});
+  const { get } = useRequest();
 
   useEffect(() => {
-    Axios.get(apiUrl + "/Form/Get", { params: { formId: params.formId } }).then(
-      response => {
-        setForm(response.data.data);
-      }
-    );
-
+    async function getForm() {
+      let response = await get("/Form/Get", { formId: params.formId });
+      setForm(response.data);
+    }
+    getForm();
     return () => {};
   }, []);
 
@@ -39,7 +38,7 @@ export default function ViewForm({ match: { params } }) {
         return (
           <>
             {field.options.map((option, index) => (
-              <Form.Field>
+              <Form.Field key={index}>
                 <Checkbox
                   label={option.value}
                   name={option.value}
@@ -54,7 +53,7 @@ export default function ViewForm({ match: { params } }) {
         return (
           <>
             {field.options.map((option, index) => (
-              <Form.Field>
+              <Form.Field key={index}>
                 <Checkbox
                   radio
                   label={option.value}

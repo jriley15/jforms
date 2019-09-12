@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
-import Axios from "axios";
-import { apiUrl } from "../config";
 import { Header, Tab, Breadcrumb, Divider } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import SnippetsTab from "../components/forms/SnippetsTab";
+import useRequest from "../hooks/useRequest";
 
 export default function FormDashboard({ match: { params } }) {
   const [form, setForm] = useState("");
+  const { get } = useRequest();
 
   useEffect(() => {
-    Axios.get(apiUrl + "/Form/Get", { params: { formId: params.formId } })
-      .then(response => {
-        setForm(response.data.data);
-      })
-      .catch(error => {});
+    async function getForm() {
+      let response = await get("/Form/Get", { formId: params.formId });
+      setForm(response.data);
+    }
+    getForm();
     return () => {};
   }, []);
 
