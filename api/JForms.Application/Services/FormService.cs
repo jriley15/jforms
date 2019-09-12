@@ -13,20 +13,23 @@ using System.Threading.Tasks;
 namespace JForms.Application.Services
 {
 
-    public interface IFormService {
+    public interface IFormService
+    {
 
 
         Task<Response> Create(CreateFormDto form);
 
-        Task<Form> Get(int formId);
+        Task<Response> Get(int formId);
 
-        Task<SearchFormResponseDto> Search(SearchFormDto search);
+        Task<Form> GetFormComplete(int formId);
+
+        Task<Response> Search(SearchFormDto search);
 
         Task<Response> Update(CreateFormDto form);
 
         Task Delete(int formId);
 
-    
+
     }
 
     public class FormService : IFormService
@@ -45,7 +48,6 @@ namespace JForms.Application.Services
 
         public async Task<Response> Create(CreateFormDto form)
         {
-            var response = new CreateFormResponseDto();
 
             var formEntity = FormHelper.MapForm(form);//_mapper.Map<Form>(form);
 
@@ -53,25 +55,15 @@ namespace JForms.Application.Services
 
             var affectedRows = await _dbContext.SaveChangesAsync();
 
-            response.Success = true;
-            response.FormId = formEntity.FormId;
-
-            return response;
+            return new DataResponse<int>() { Data = formEntity.FormId, Success = true };
         }
 
-        public async Task<Form> Get(int formId)
+        public async Task<Response> Get(int formId)
         {
-            return await _dbContext.Forms.Include(f => f.Fields).
-                    ThenInclude(f => f.Validation).
-                    ThenInclude(v => v.Rules)
-                .Include(f => f.Fields)
-                    .ThenInclude(f => f.Options)
-                .Include(f => f.Fields)
-                    .ThenInclude(f => f.FormFieldType)
-                .SingleOrDefaultAsync(f => f.FormId == formId);
+            return new DataResponse<Form>() { Data = await GetFormComplete(formId), Success = true };
         }
 
-        public Task<SearchFormResponseDto> Search(SearchFormDto search)
+        public Task<Response> Search(SearchFormDto search)
         {
             throw new NotImplementedException();
         }
@@ -84,6 +76,22 @@ namespace JForms.Application.Services
         public Task Delete(int formId)
         {
             throw new NotImplementedException();
+        }
+
+
+
+        //keep this here until repositories added
+        public async Task<Form> GetFormComplete(int formId)
+        {
+            return await _dbContext.Forms.Include(f => f.Fields).
+                ThenInclude(f => f.Validation).
+                ThenInclude(v => v.Rules)
+            .Include(f => f.Fields)
+                .ThenInclude(f => f.Options)
+            .Include(f => f.Fields)
+                .ThenInclude(f => f.FormFieldType)
+            .SingleOrDefaultAsync(f => f.FormId == formId);
+
         }
     }
 }

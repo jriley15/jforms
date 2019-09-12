@@ -65,7 +65,7 @@ export default function CreateForm() {
       .then(response => {
         setSuccess(true);
         setSubmitting(false);
-        setFormId(response.data.formId);
+        setFormId(response.data.data);
       })
       .catch(error => {
         setSubmitting(false);
@@ -178,7 +178,7 @@ export default function CreateForm() {
         }
       })
         .then(response => {
-          let validTypes = response.data;
+          let validTypes = response.data.data;
 
           types[formFields[fieldIndex].Type] = validTypes;
 
@@ -238,7 +238,7 @@ export default function CreateForm() {
   useEffect(() => {
     Axios.get(apiUrl + "/FormField/GetTypes")
       .then(response => {
-        setFormFieldTypes(response.data);
+        setFormFieldTypes(response.data.data);
       })
       .catch(error => {});
 

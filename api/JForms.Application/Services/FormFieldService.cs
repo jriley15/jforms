@@ -18,9 +18,9 @@ namespace JForms.Application.Services
     {
 
 
-        Task<IEnumerable<FormFieldType>> GetTypes();
+        Task<Response> GetTypes();
 
-        Task<IEnumerable<FormFieldValidationRuleType>> GetValidationTypes(FieldType fieldType);
+        Task<Response> GetValidationTypes(FieldType fieldType);
 
     }
 
@@ -37,18 +37,26 @@ namespace JForms.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<FormFieldType>> GetTypes()
+        public async Task<Response> GetTypes()
         {
-            return await _dbContext.FormFieldTypes.ToListAsync();
+            return new DataResponse<IEnumerable<FormFieldType>>()
+            {
+                Data = await _dbContext.FormFieldTypes.ToListAsync(),
+                Success = true
+            };
         }
 
-        public async Task<IEnumerable<FormFieldValidationRuleType>> GetValidationTypes(FieldType fieldType)
+        public async Task<Response> GetValidationTypes(FieldType fieldType)
         {
             var field = (int)fieldType;
-            return await _dbContext.FormFieldValidationRuleTypes
+            return new DataResponse<IEnumerable<FormFieldValidationRuleType>>()
+            {
+                Data = await _dbContext.FormFieldValidationRuleTypes
                 .Include(x => x.FormFieldTypeRuleType)
                 .ThenInclude(x => x.FormFieldType)
-                .Where(x => x.FormFieldTypeRuleType.Any(y => y.FormFieldTypeId == field)).ToListAsync();
+                .Where(x => x.FormFieldTypeRuleType.Any(y => y.FormFieldTypeId == field)).ToListAsync(),
+                Success = true
+            };
 
         }
     }

@@ -26,15 +26,15 @@ namespace JForms.API.Controllers
 
 
         [HttpGet]
-        public async Task<IEnumerable<FormFieldType>> GetTypes()
+        public async Task<IActionResult> GetTypes()
         {
-            return await _formFieldService.GetTypes();
+            return this.GenerateResponse(await _formFieldService.GetTypes());
         }
 
         [HttpGet]
-        public async Task<IEnumerable<FormFieldValidationRuleType>> GetValidationTypes(FieldType fieldType)
+        public async Task<IActionResult> GetValidationTypes(FieldType fieldType)
         {
-            return await _formFieldService.GetValidationTypes(fieldType);
+            return  this.GenerateResponse(await _formFieldService.GetValidationTypes(fieldType));
         }
 
     }

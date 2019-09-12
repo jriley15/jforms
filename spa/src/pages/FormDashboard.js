@@ -11,7 +11,7 @@ export default function FormDashboard({ match: { params } }) {
   useEffect(() => {
     Axios.get(apiUrl + "/Form/Get", { params: { formId: params.formId } })
       .then(response => {
-        setForm(response.data);
+        setForm(response.data.data);
       })
       .catch(error => {});
     return () => {};

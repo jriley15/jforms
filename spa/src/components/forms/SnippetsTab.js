@@ -28,7 +28,7 @@ export default function SnippetsTab({ formId }) {
         formId: formId
       }
     }).then(response => {
-      setSnippets(response.data);
+      setSnippets(response.data.data);
       setLoading(false);
     });
 

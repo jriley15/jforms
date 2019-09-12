@@ -35,9 +35,9 @@ namespace JForms.API.Controllers
 
         //form data fetch from UI here for user submissions / owner editing
         [HttpGet]
-        public async Task<Form> Get(int formId)
+        public async Task<IActionResult> Get(int formId)
         {
-            return await _formService.Get(formId);
+            return this.GenerateResponse(await _formService.Get(formId));
         }
 
 
@@ -68,9 +68,9 @@ namespace JForms.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<FormSnippetDto>> GetSnippets(int formId)
+        public async Task<IActionResult> GetSnippets(int formId)
         {
-            return await _formSnippetservice.GetSnippets(formId);
+            return this.GenerateResponse(await _formSnippetservice.GetSnippets(formId));
         }
 
     }

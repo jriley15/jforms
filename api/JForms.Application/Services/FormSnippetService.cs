@@ -8,13 +8,14 @@ using System.Linq;
 using JForms.Data.Entity;
 using JForms.Data.Local;
 using JForms.Application.Extensions;
+using JForms.Data.Dto;
 
 namespace JForms.Application.Services
 {
 
     public interface IFormSnippetservice
     {
-        Task<IEnumerable<FormSnippetDto>> GetSnippets(int formId);
+        Task<Response> GetSnippets(int formId);
     }
 
     public class FormSnippetService : IFormSnippetservice
@@ -30,14 +31,14 @@ namespace JForms.Application.Services
             _formService = formService;
         }
 
-        public async Task<IEnumerable<FormSnippetDto>> GetSnippets(int formId)
+        public async Task<Response> GetSnippets(int formId)
         {
 
             List<FormSnippetDto> Snippets = new List<FormSnippetDto>();
 
             //generate code snippets
 
-            var form = await _formService.Get(formId);
+            var form = await _formService.GetFormComplete(formId);
 
             //HTML form
             StringBuilder HTML = new StringBuilder();
@@ -171,7 +172,7 @@ namespace JForms.Application.Services
             Snippets.Add(new FormSnippetDto() { Type = SnippetType.Fetch, Code = Fetch.ToString() });
 
 
-            return Snippets;
+            return new DataResponse<IEnumerable<FormSnippetDto>>() { Data = Snippets, Success = true };
         }
     }
 }
