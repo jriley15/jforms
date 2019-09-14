@@ -17,7 +17,7 @@ const Spacer = styled.div`
   padding-bottom: 8px;
 `;
 
-export default function SnippetsTab({ formId }) {
+export default function SnippetsTab({ formId, encodedFormId }) {
   const [snippets, setSnippets] = useState([]);
   const [loading, setLoading] = useState(true);
   const { get } = useRequest();
@@ -46,8 +46,8 @@ export default function SnippetsTab({ formId }) {
         code.
       </p>
       <p style={{ fontSize: "1.2em" }}>
-        <Link to={"/form/" + formId}>
-          {"https://localhost:3000/form/" + formId}
+        <Link to={"/form/" + encodedFormId}>
+          {"https://localhost:3000/form/" + encodedFormId}
         </Link>
       </p>
 

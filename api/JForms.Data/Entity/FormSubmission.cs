@@ -18,6 +18,8 @@ namespace JForms.Data.Entity
 
         //errors?
 
+        public DateTime CreatedOn { get; set; }
+
         //submission values
         public ICollection<FormSubmissionValue> Values { get; set; }
 

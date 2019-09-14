@@ -18,6 +18,8 @@ namespace JForms.Data
 
         public DbSet<FormFieldValidationRuleType> FormFieldValidationRuleTypes { get; set; }
 
+        public DbSet<FormSubmission> FormSubmissions { get; set; }
+
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {

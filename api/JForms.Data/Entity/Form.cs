@@ -1,6 +1,7 @@
 ﻿using JForms.Data.Local;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,7 +31,10 @@ namespace JForms.Data.Entity
         public ICollection<FormOrigin> Origins { get; set; }
 
         //timestamps?
+        public DateTime CreatedOn { get; set; }
 
+        [NotMapped]
+        public string EncodedFormId { get; set; }
 
         public Form()
         {

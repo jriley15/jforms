@@ -106,14 +106,14 @@ export default function Login({ open, close }) {
               <Button content="Sign in with GitHub" icon="github" fluid />
             </Modal.Content>
             <Modal.Actions style={{ backgroundColor: "rgb(48, 48, 48)" }}>
-              <Button>Cancel</Button>
+              <Button onClick={close}>Cancel</Button>
               <Button
                 type="submit"
                 color="blue"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
               >
-                Submit
+                Login
               </Button>
             </Modal.Actions>
           </Modal>

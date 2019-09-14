@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Table, Search, Breadcrumb, Divider } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import useRequest from "../hooks/useRequest";
 
 const ButtonGroup = styled.div`
   display: flex;
@@ -17,6 +18,22 @@ export default function ViewForms() {
    * Search / sort fields
    *
    */
+
+  const [forms, setForms] = useState([]);
+
+  const { get } = useRequest();
+
+  useEffect(() => {
+    async function getForms() {
+      let response = await get("/Form/GetAll", {});
+      if (response.success) {
+        setForms(response.data);
+      }
+    }
+    getForms();
+
+    return () => {};
+  }, []);
 
   return (
     <>
@@ -54,36 +71,20 @@ export default function ViewForms() {
         </Table.Header>
 
         <Table.Body>
-          <Table.Row>
-            <Table.Cell>John</Table.Cell>
-            <Table.Cell>1,243</Table.Cell>
-            <Table.Cell>None</Table.Cell>
-            <Table.Cell>
-              <Button as={Link} to="/form/dashboard/1" compact>
-                View
-              </Button>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Cell>Jamie</Table.Cell>
-            <Table.Cell>2,345</Table.Cell>
-            <Table.Cell>Requires call</Table.Cell>
-            <Table.Cell>
-              <Button as={Link} to="/form/dashboard/1" compact>
-                View
-              </Button>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Cell>Jill</Table.Cell>
-            <Table.Cell>656,534</Table.Cell>
-            <Table.Cell>None</Table.Cell>
-            <Table.Cell>
-              <Button as={Link} to="/form/dashboard/1" compact>
-                View
-              </Button>
-            </Table.Cell>
-          </Table.Row>
+          {forms.map((form, index) => (
+            <Table.Row key={index}>
+              <Table.Cell>{form.name}</Table.Cell>
+              <Table.Cell>{form.submissionCount}</Table.Cell>
+              <Table.Cell>
+                {new Date(form.createdOn).toLocaleDateString()}
+              </Table.Cell>
+              <Table.Cell>
+                <Button as={Link} to={"/form/dashboard/" + form.formId} compact>
+                  View
+                </Button>
+              </Table.Cell>
+            </Table.Row>
+          ))}
         </Table.Body>
       </Table>
     </>

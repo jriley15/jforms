@@ -14,12 +14,13 @@ namespace JForms.Application.Services
 {
 
 
-    public interface ISubmitService {
+    public interface ISubmitService
+    {
 
 
         Task<Response> SubmitForm(int formId, Dictionary<string, string> submission);
 
-    
+
     }
 
 
@@ -50,9 +51,11 @@ namespace JForms.Application.Services
 
 
 
-
             //create a new submission entity
-            var submissionEntity = new FormSubmission();
+            var submissionEntity = new FormSubmission()
+            {
+                CreatedOn = DateTime.UtcNow
+            };
 
             //add submission values to entity and map the fields
             formEntity.Fields.ToList().ForEach(field =>

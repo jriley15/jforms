@@ -17,9 +17,13 @@ export default function ViewForm({ match: { params } }) {
   const [form, setForm] = useState({});
   const { get } = useRequest();
 
+  const [submission, setSubmission] = useState({});
+
   useEffect(() => {
     async function getForm() {
-      let response = await get("/Form/Get", { formId: params.formId });
+      let response = await get("/Form/GetForSubmit", {
+        formId: params.formId
+      });
       setForm(response.data);
     }
     getForm();

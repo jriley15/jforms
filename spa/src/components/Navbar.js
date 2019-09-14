@@ -17,8 +17,10 @@ import useAuth from "../hooks/useAuth";
 export default function Navbar() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
+  const { getAuth, logout } = useAuth();
 
-  const { authState, logout } = useAuth();
+  //should prob be in a side effect to avoid blocking before first render
+  const auth = getAuth();
 
   return (
     <Segment
@@ -38,7 +40,7 @@ export default function Navbar() {
           About
         </Menu.Item>
         <Menu.Item position="right">
-          {!authState.authenticated ? (
+          {!auth ? (
             <>
               <Button
                 inverted
@@ -66,11 +68,7 @@ export default function Navbar() {
                 color="teal"
                 inverted
               />
-              <Button
-                inverted
-                style={{ marginLeft: "0.5em" }}
-                onClick={logout}
-              >
+              <Button inverted style={{ marginLeft: "0.5em" }} onClick={logout}>
                 Log out
               </Button>
             </>

@@ -3,6 +3,7 @@ import { Header, Tab, Breadcrumb, Divider } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import SnippetsTab from "../components/forms/SnippetsTab";
 import useRequest from "../hooks/useRequest";
+import SubmissionsTab from "../components/forms/SubmissionsTab";
 
 export default function FormDashboard({ match: { params } }) {
   const [form, setForm] = useState("");
@@ -10,7 +11,7 @@ export default function FormDashboard({ match: { params } }) {
 
   useEffect(() => {
     async function getForm() {
-      let response = await get("/Form/Get", { formId: params.formId });
+      let response = await get("/Form/GetForEdit", { formId: params.formId });
       setForm(response.data);
     }
     getForm();
@@ -30,29 +31,36 @@ export default function FormDashboard({ match: { params } }) {
       menuItem: "Snippets",
       render: () => (
         <Tab.Pane inverted>
-          <SnippetsTab formId={params.formId} />
+          <SnippetsTab
+            formId={params.formId}
+            encodedFormId={form.encodedFormId}
+          />
         </Tab.Pane>
       )
     },
     {
       menuItem: "Submissions",
-      render: () => <Tab.Pane inverted>Tab 2 Content</Tab.Pane>
+      render: () => (
+        <Tab.Pane inverted>
+          <SubmissionsTab formId={params.formId} />
+        </Tab.Pane>
+      )
     },
     {
       menuItem: "Hooks",
-      render: () => <Tab.Pane inverted>Tab 1 Content</Tab.Pane>
+      render: () => <Tab.Pane inverted>Coming soon</Tab.Pane>
     },
     {
       menuItem: "Edit Form",
-      render: () => <Tab.Pane inverted>Tab 3 Content</Tab.Pane>
+      render: () => <Tab.Pane inverted>Coming soon</Tab.Pane>
     },
     {
       menuItem: "Options",
-      render: () => <Tab.Pane inverted>Tab 1 Content</Tab.Pane>
+      render: () => <Tab.Pane inverted>Coming soon</Tab.Pane>
     },
     {
       menuItem: "Help",
-      render: () => <Tab.Pane inverted>Tab 1 Content</Tab.Pane>
+      render: () => <Tab.Pane inverted>Coming soon</Tab.Pane>
     }
   ];
 
@@ -72,7 +80,7 @@ export default function FormDashboard({ match: { params } }) {
       <Tab
         panes={panes}
         style={{ marginTop: 32 }}
-        defaultActiveIndex={1}
+        defaultActiveIndex={2}
         menu={{
           attached: true,
           tabular: true,

@@ -1,6 +1,7 @@
 ﻿using JForms.Data.Dto;
 using JForms.Data.Dto.Auth;
 using JForms.Data.Entity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -21,6 +22,10 @@ namespace JForms.Application.Services
         Task<Response> Login(LoginDto loginDto);
 
         Task<Response> Register(RegisterDto registerDto);
+
+        string GetCurrentUserId();
+
+        Task<ApplicationUser> GetCurrentUser();
     }
 
 
@@ -30,13 +35,16 @@ namespace JForms.Application.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IHttpContextAccessor contextAccessor)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _contextAccessor = contextAccessor;
         }
+
 
         public async Task<Response> Login(LoginDto loginDto)
         {
@@ -45,7 +53,7 @@ namespace JForms.Application.Services
 
             if (result.Succeeded)
             {
-                var appUser = _userManager.Users.SingleOrDefault(r => r.Email == loginDto.Email);
+                var appUser = _userManager.Users.SingleOrDefault(r => r.Email == loginDto.Email && r.UserName == loginDto.Email);
                 invalidResponse = new DataResponse<object>() { Data = GenerateJwtToken(loginDto.Email, appUser), Success = true };
             }
             else
@@ -102,8 +110,8 @@ namespace JForms.Application.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, email),
-                new Claim("UserId", user.Id)
+                new Claim(ClaimTypes.Email, email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
@@ -119,6 +127,17 @@ namespace JForms.Application.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        //anything calling this must first use the [authorize] middleware in the request
+        public string GetCurrentUserId()
+        {
+            return _contextAccessor.HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+        }
+
+        public async Task<ApplicationUser> GetCurrentUser()
+        {
+            return await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         }
     }
 }

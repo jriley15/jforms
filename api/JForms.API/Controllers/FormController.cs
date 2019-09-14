@@ -7,6 +7,8 @@ using JForms.API.Extensions;
 using JForms.Data.Dto.Form;
 using JForms.Application.Services;
 using JForms.Data.Entity;
+using Microsoft.AspNetCore.Authorization;
+using JForms.Application.Helpers;
 
 namespace JForms.API.Controllers
 {
@@ -28,6 +30,7 @@ namespace JForms.API.Controllers
 
         //create form here from UI for owners
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(CreateFormDto form)
         {
             return this.GenerateResponse(await _formService.Create(form));
@@ -35,11 +38,33 @@ namespace JForms.API.Controllers
 
         //form data fetch from UI here for user submissions / owner editing
         [HttpGet]
-        public async Task<IActionResult> Get(int formId)
+        public async Task<IActionResult> GetForSubmit(string formId)
         {
-            return this.GenerateResponse(await _formService.Get(formId));
+            return this.GenerateResponse(await _formService.GetForm(formId));
         }
 
+        //form data fetch from UI here for user submissions / owner editing
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetForEdit(int formId)
+        {
+            return this.GenerateResponse(await _formService.GetForm(formId));
+        }
+
+        //gets shallow list of forms for current user to display on dashboard
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAll()
+        {
+            return this.GenerateResponse(await _formService.GetFormsForCurrentUser());
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetWithSubmissions(int formId)
+        {
+            return this.GenerateResponse(await _formService.GetFormWithSubmissions(formId));
+        }
 
         //form data search here for owners to display in list on UI
         [HttpPost]
@@ -62,9 +87,7 @@ namespace JForms.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int formId)
         {
-
             return Ok();
-
         }
 
         [HttpGet]

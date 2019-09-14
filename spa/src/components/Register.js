@@ -120,7 +120,7 @@ export default function Register({ open, close }) {
               <Button content="Sign in with GitHub" icon="github" fluid />
             </Modal.Content>
             <Modal.Actions style={{ backgroundColor: "rgb(48, 48, 48)" }}>
-              <Button>Cancel</Button>
+              <Button onClick={close}>Cancel</Button>
               <Button
                 color="blue"
                 type="submit"

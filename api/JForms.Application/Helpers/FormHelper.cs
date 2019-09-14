@@ -16,6 +16,7 @@ namespace JForms.Application.Helpers
             {
                 Name = formDto.Name,
                 Type = formDto.Type,
+                CreatedOn = DateTime.UtcNow,
                 Fields = formDto.Fields.Select(field => new FormField()
                 {
                     Name = field.Name,

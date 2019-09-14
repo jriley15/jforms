@@ -8,13 +8,32 @@ export default function useAuth() {
 
   const authState = useSelector(state => state.auth);
 
-  const getAuthFromStorage = () => {
-    const token = localStorage.getItem(constants.LOCAL_STORAGE_ID);
+  const loadAuthFromStorage = () => {
+    if (!authState.checkedForAuth) {
+      const token = localStorage.getItem(constants.LOCAL_STORAGE_ID);
 
-    if (token) {
-      //check if expired??
-      //refresh??
-      set(token);
+      if (token) {
+        //check if expired??
+        //refresh??
+        set(token);
+        return token;
+      }
+      dispatch({
+        type: constants.CHECKED_FOR_AUTH
+      });
+    }
+    return false;
+  };
+
+  const getAuth = () => {
+    if (authState.authenticated) {
+      return authState.authToken;
+    }
+
+    if (authState.checkedForAuth) {
+      return false;
+    } else {
+      return loadAuthFromStorage();
     }
   };
 
@@ -40,5 +59,10 @@ export default function useAuth() {
     localStorage.removeItem(constants.LOCAL_STORAGE_ID);
   };
 
-  return { getAuthFromStorage, setAuth, authState, logout };
+  return {
+    setAuth,
+    authState,
+    logout,
+    getAuth
+  };
 }

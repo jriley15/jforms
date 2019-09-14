@@ -4,15 +4,17 @@ import { formatErrorResponse } from "../helpers/errorHelper";
 import { apiUrl } from "../config";
 
 export default function useRequest() {
-  const { authState } = useAuth();
+  const { getAuth } = useAuth();
+
+  const auth = getAuth();
 
   const post = async (url, body) => {
     let headers = {
       "Content-Type": "application/json"
     };
 
-    if (authState.authenticated) {
-      headers = { ...headers, Authorization: "Bearer " + authState.authToken };
+    if (auth) {
+      headers = { ...headers, Authorization: "Bearer " + auth };
     }
 
     let response = {};
@@ -35,21 +37,18 @@ export default function useRequest() {
   const get = async (url, params) => {
     let headers = {};
 
-    if (authState.authenticated) {
-      headers = { Authorization: "Bearer " + authState.authToken };
+    if (auth) {
+      headers = { Authorization: "Bearer " + auth };
     }
+
+    console.log(auth);
 
     let response = {};
 
-    await Axios.get(
-      apiUrl + url,
-      { params: params },
-      {
-        headers: {
-          headers
-        }
-      }
-    )
+    await Axios.get(apiUrl + url, {
+      params: params,
+      headers: headers
+    })
       .then(res => {
         response = res.data;
       })

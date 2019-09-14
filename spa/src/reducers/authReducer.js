@@ -3,7 +3,8 @@ import constants from "../constants/authConstants.js";
 const initialState = {
   authenticated: false,
   authToken: "",
-  identity: {}
+  identity: {},
+  checkedForAuth: false
 };
 
 const reducer = (state, action) => {
@@ -16,6 +17,12 @@ const reducer = (state, action) => {
         authenticated: true,
         authToken: action.authToken,
         identity: action.identity
+      };
+
+    case constants.CHECKED_FOR_AUTH:
+      return {
+        ...state,
+        checkedForAuth: true
       };
 
     case constants.REMOVE_AUTH:

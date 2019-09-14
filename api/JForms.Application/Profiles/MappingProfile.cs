@@ -17,6 +17,9 @@ namespace JForms.Application.Profiles
             CreateMap<FormFieldDto, FormField>();
             CreateMap<FormFieldValidationDto, FormFieldValidation>();
             CreateMap<FormFieldValidationRuleDto, FormFieldValidationRule>();
+
+            CreateMap<FormDto, Form>();
+            CreateMap<Form, FormDto>();
         }
     }
 }
