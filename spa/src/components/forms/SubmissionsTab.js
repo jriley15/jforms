@@ -48,7 +48,7 @@ export default function SubmissionsTab({ formId }) {
               <Table.Row>
                 <Table.HeaderCell>Date</Table.HeaderCell>
                 {form.fields.map((field, index) => (
-                  <Table.HeaderCell>{field.name}</Table.HeaderCell>
+                  <Table.HeaderCell key={index}>{field.name}</Table.HeaderCell>
                 ))}
               </Table.Row>
             </Table.Header>

@@ -69,7 +69,9 @@ namespace JForms.Application.Services
                         foreach (FormFieldOption option in field.Options)
                         {
                             HTML.AppendTab();
-                            HTML.AppendLine("<input id='" + field.Name + "' type='radio' name='" + field.Name + "' value='"+ option.Value + "' />");
+                            HTML.AppendLine("<label for='" + field.Name + radioIndex + "'>"+ option.Value + "</label>");
+                            HTML.AppendTab();
+                            HTML.AppendLine("<input id='" + field.Name + radioIndex + "' type='radio' name='" + field.Name + "' value='"+ option.Value + "' />");
                             radioIndex++;
                         }
                         break;
@@ -81,7 +83,7 @@ namespace JForms.Application.Services
                             HTML.AppendTab();
                             HTML.AppendLine("<label for='" + field.Name + checkIndex + "'>" + char.ToUpper(option.Value[0]) + option.Value.Substring(1, option.Value.Length - 1) + "</label>");
                             HTML.AppendTab();
-                            HTML.AppendLine("<input id='" + field.Name + checkIndex + "' type='checkbox' name='" + option.Value + "' value='" + option.Value + "' />");
+                            HTML.AppendLine("<input id='" + field.Name + checkIndex + "' type='checkbox' name='" + field.Name + "-" + option.Value + "' value='" + option.Value + "' />");
                             checkIndex++;
                         }
                         break;
@@ -103,7 +105,7 @@ namespace JForms.Application.Services
                 }
             }
             HTML.AppendTab();
-            HTML.AppendLine("<input type='submit' value='Submit'>");
+            HTML.AppendLine("<input type='submit' value='Submit' />");
             HTML.AppendLine("</form>");
             Snippets.Add(new FormSnippetDto() { Type = SnippetType.HTML, Code = HTML.ToString() });
 

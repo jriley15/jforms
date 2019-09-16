@@ -20,9 +20,7 @@ export default function useRequest() {
     let response = {};
 
     await Axios.post(apiUrl + url, body, {
-      headers: {
-        headers
-      }
+      headers: headers
     })
       .then(res => {
         response = res.data;
@@ -40,8 +38,6 @@ export default function useRequest() {
     if (auth) {
       headers = { Authorization: "Bearer " + auth };
     }
-
-    console.log(auth);
 
     let response = {};
 
