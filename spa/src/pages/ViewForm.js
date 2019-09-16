@@ -88,7 +88,13 @@ export default function ViewForm({ match: { params } }) {
               <FormField key={index}>
                 <Form.Field
                   label={
-                    field.name.charAt(0).toUpperCase() + field.name.substring(1)
+                    field.name.charAt(0).toUpperCase() +
+                    field.name.substring(1) +
+                    (field.validation.rules.filter(
+                      r => r.formFieldValidationRuleTypeId === 1
+                    ).length > 0
+                      ? " *"
+                      : "")
                   }
                 />
                 <Indent>

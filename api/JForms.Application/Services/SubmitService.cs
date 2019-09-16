@@ -74,13 +74,11 @@ namespace JForms.Application.Services
                         //specific rules based on field type
                         switch (field.FormFieldTypeId)
                         {
-
                             case (int)FieldType.Number:
 
                                 bool isNumber = int.TryParse(submittedValue, out int parsedValue);
                                 var minRule = field.Validation.Rules.FirstOrDefault(r => r.FormFieldValidationRuleTypeId == (int)RuleType.Minimum_Value);
                                 var maxRule = field.Validation.Rules.FirstOrDefault(r => r.FormFieldValidationRuleTypeId == (int)RuleType.Maxmimum__Value);
-
                                 if (!isNumber)
                                 {
                                     response.AddError(field.Name, "Value must be a number");
@@ -96,15 +94,12 @@ namespace JForms.Application.Services
                                         response.AddError(field.Name, "Value must be less than or equal to " + maxRule.Constraint);
                                     }
                                 }
-
                                 break;
 
                             case (int)FieldType.String:
 
                                 var minLengthRule = field.Validation.Rules.FirstOrDefault(r => r.FormFieldValidationRuleTypeId == (int)RuleType.Minimum_Length);
                                 var maxLengthRule = field.Validation.Rules.FirstOrDefault(r => r.FormFieldValidationRuleTypeId == (int)RuleType.Maxmimum_Length);
-
-
                                 if (minLengthRule != null && submittedValue.Length < int.Parse(minLengthRule.Constraint))
                                 {
                                     response.AddError(field.Name, "Value must be at least " + minLengthRule.Constraint + " characters long");
@@ -113,12 +108,9 @@ namespace JForms.Application.Services
                                 {
                                     response.AddError(field.Name, "Value must be less than or equal to " + maxLengthRule.Constraint + " characters long");
                                 }
-
-
                                 break;
                         }
                     }
-
 
                 }
                 //custom javascript validation
