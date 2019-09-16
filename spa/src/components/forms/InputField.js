@@ -8,7 +8,8 @@ export default function InputField({
   onChange,
   onCheckboxChange,
   onDateChange,
-  submission
+  submission,
+  errors
 }) {
   switch (field.formFieldType.name) {
     case "String":
@@ -17,6 +18,7 @@ export default function InputField({
           placeholder={field.name}
           value={submission[field.name] ? submission[field.name] : ""}
           onChange={onChange(field.name)}
+          error={errors[field.name] ? true : false}
         />
       );
 
@@ -27,6 +29,7 @@ export default function InputField({
           style={{ maxWidth: 75 }}
           value={submission[field.name] ? submission[field.name] : ""}
           onChange={onChange(field.name)}
+          error={errors[field.name] ? true : false}
         />
       );
 
@@ -80,9 +83,7 @@ export default function InputField({
     case "Date":
       return (
         <DatePicker
-          selected={
-            submission[field.name] ? submission[field.name] : new Date()
-          }
+          selected={submission[field.name]}
           onChange={onDateChange(field.name)}
         />
       );

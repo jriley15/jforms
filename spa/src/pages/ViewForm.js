@@ -5,7 +5,8 @@ import {
   Segment,
   Checkbox,
   Divider,
-  Radio
+  Radio,
+  List
 } from "semantic-ui-react";
 import styled from "styled-components";
 import useRequest from "../hooks/useRequest";
@@ -25,6 +26,7 @@ export default function ViewForm({ match: { params } }) {
   const { get, post } = useRequest();
   const [submission, setSubmission] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState([]);
 
   useEffect(() => {
     async function getForm() {
@@ -67,6 +69,7 @@ export default function ViewForm({ match: { params } }) {
 
     if (response.success) {
     } else {
+      setErrors(response.errors);
     }
     setSubmitting(false);
   };
@@ -95,7 +98,14 @@ export default function ViewForm({ match: { params } }) {
                     onDateChange={onDateChange}
                     submission={submission}
                     field={field}
+                    errors={errors}
                   />
+                  <List>
+                    {errors[field.name] &&
+                      errors[field.name].map((error, index) => (
+                        <List.Item style={{ color: "red" }}>{error}</List.Item>
+                      ))}
+                  </List>
                 </Indent>
               </FormField>
             ))}

@@ -1,5 +1,6 @@
 ﻿using JForms.Data.Dto.Form;
 using JForms.Data.Entity;
+using JForms.Data.Local;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,8 @@ namespace JForms.Application.Helpers
                     {
                         Script = field.Validation.Script,
                         Type = field.Validation.Type,
-                        Rules = field.Validation.Rules.Where(rule => rule.Type > 0 && !rule.Value.Equals("")).Select(rule => new FormFieldValidationRule()
+                        Rules = field.Validation.Rules.Where(rule => rule.Type > 0 && (rule.Type == RuleType.Required || !rule.Value.Equals(""))).Select(rule => new FormFieldValidationRule()
+
                         {
                             Constraint = rule.Value,
                             FormFieldValidationRuleTypeId = (int)rule.Type
