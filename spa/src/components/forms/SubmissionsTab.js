@@ -59,12 +59,17 @@ export default function SubmissionsTab({ formId }) {
                   <Table.Cell key={index}>
                     {new Date(submission.createdOn).toLocaleDateString()}
                   </Table.Cell>
-                  {form.fields.map((field, index) => {
-                    const value = submission.values.find(
-                      v => v.field.formFieldId === field.formFieldId
-                    );
-                    return <Table.Cell key={index}>{value.value}</Table.Cell>;
-                  })}
+                  {form.fields.map((field, index) => (
+                    <Table.Cell key={index}>
+                      {submission.values
+                        .filter(v => v.field.formFieldId === field.formFieldId)
+                        .map((value, valueIndex) => (
+                          <span key={valueIndex}>
+                            {(valueIndex !== 0 ? ", " : "") + value.value}
+                          </span>
+                        ))}
+                    </Table.Cell>
+                  ))}
                 </Table.Row>
               ))}
             </Table.Body>

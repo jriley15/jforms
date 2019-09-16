@@ -67,7 +67,6 @@ export default function InputField({
       return (
         <Form.Select
           fluid
-          label="Gender"
           options={field.options.map((option, index) => ({
             key: option.value,
             text: option.value,
@@ -75,7 +74,7 @@ export default function InputField({
           }))}
           value={submission[field.name]}
           onChange={onChange(field.name)}
-          placeholder="Gender"
+          placeholder={field.name}
         />
       );
     case "Date":

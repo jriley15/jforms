@@ -26,6 +26,10 @@ namespace JForms.API.Controllers
         [Route("{formId}")]
         public async Task<IActionResult> SubmitFromForm([FromRoute] int formId, [FromForm] Dictionary<string, string> form)
         {
+
+            //return to previous url with success / error??
+            //maybe show a generic view with a success / return button
+
             return this.GenerateResponse(await _submitService.SubmitForm(formId, form));
         }
 

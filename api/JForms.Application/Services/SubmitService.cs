@@ -8,6 +8,7 @@ using AutoMapper;
 using JForms.Data;
 using JForms.Data.Dto;
 using JForms.Data.Entity;
+using JForms.Data.Local;
 using Microsoft.EntityFrameworkCore;
 
 namespace JForms.Application.Services
@@ -32,17 +33,22 @@ namespace JForms.Application.Services
 
         private readonly IMapper _mapper;
 
-        public SubmitService(Data.DatabaseContext dbContext, IMapper mapper)
+        private readonly IFormService _formService;
+
+        public SubmitService(Data.DatabaseContext dbContext, IMapper mapper, IFormService formService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _formService = formService;
         }
 
         public async Task<Response> SubmitForm(int formId, Dictionary<string, string> submission)
         {
+            var response = new Response();
+
 
             //get form we're creating a submission for
-            var formEntity = await _dbContext.Forms.Include(f => f.Fields).SingleOrDefaultAsync(f => f.FormId == formId);
+            var formEntity = await _formService.GetFormComplete(formId);
 
 
             //TODO: check origin from http headers with allowed origins from form
@@ -60,24 +66,36 @@ namespace JForms.Application.Services
             //add submission values to entity and map the fields
             formEntity.Fields.ToList().ForEach(field =>
             {
-
-                submissionEntity.Values.Add(new FormSubmissionValue()
+                //check boxes can have multiple submission values for one field
+                if (field.FormFieldType.FormFieldTypeId == (int)FieldType.CheckBox)
                 {
-                    Field = field,
-                    Value = submission[field.Name]
-                });
+                    foreach (FormFieldOption option in field.Options)
+                    {
+                        if (submission.ContainsKey(field.Name + "-" + option.Value))
+                        {
+                            submissionEntity.Values.Add(new FormSubmissionValue()
+                            {
+                                Field = field,
+                                Value = option.Value
+                            });
+                        }
+                    }
+                }
+                else if (submission.ContainsKey(field.Name))
+                {
+                    submissionEntity.Values.Add(new FormSubmissionValue()
+                    {
+                        Field = field,
+                        Value = submission[field.Name]
+                    });
+                }
             });
 
             formEntity.Submissions.Add(submissionEntity);
 
             await _dbContext.SaveChangesAsync();
 
-
-
-            var response = new Response()
-            {
-                Success = true
-            };
+            response.Success = true;
 
             return response;
 

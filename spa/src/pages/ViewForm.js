@@ -63,7 +63,7 @@ export default function ViewForm({ match: { params } }) {
   const submitForm = async () => {
     setSubmitting(true);
 
-    let response = await post("/Submit/", submission);
+    let response = await post("/Submit/" + form.formId, submission);
 
     if (response.success) {
     } else {
@@ -79,7 +79,7 @@ export default function ViewForm({ match: { params } }) {
       </Header>
       <Divider />
       <Segment inverted>
-        <Form inverted size="large">
+        <Form inverted size="large" onSubmit={submitForm}>
           {form.fields &&
             form.fields.map((field, index) => (
               <FormField key={index}>
@@ -100,7 +100,7 @@ export default function ViewForm({ match: { params } }) {
               </FormField>
             ))}
 
-          <Form.Button>Submit</Form.Button>
+          <Form.Button type="submit">Submit</Form.Button>
         </Form>
       </Segment>
     </>
