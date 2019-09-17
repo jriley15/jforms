@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using JForms.API.Extensions;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace JForms.API.Controllers
 {
@@ -30,7 +31,12 @@ namespace JForms.API.Controllers
             //return to previous url with success / error??
             //maybe show a generic view with a success / return button
 
-            return this.GenerateResponse(await _submitService.SubmitForm(formId, form));
+            var response = await _submitService.SubmitForm(formId, form);
+
+
+
+            return Redirect("http://localhost:3000/form/submit/" + formId + "?response=" + JsonConvert.SerializeObject(new DataResponse<string>() { Success = response.Success, Errors = response.Errors, Data = Request.Headers["Referer"].ToString() }));
+            //this.GenerateResponse(await _submitService.SubmitForm(formId, form));
         }
 
         [HttpPost]

@@ -5,6 +5,8 @@ import ViewForms from "../pages/ViewForms";
 import FormDashboard from "../pages/FormDashboard";
 import ViewForm from "../pages/ViewForm";
 import PrivateRoute from "./PrivateRoute";
+import ViewFormTest from "../pages/ViewFormTest";
+import FormSubmit from "../pages/FormSubmit";
 
 export default function Form({ match: { url } }) {
   return (
@@ -15,6 +17,8 @@ export default function Form({ match: { url } }) {
         path={`${url}/dashboard/:formId`}
         component={FormDashboard}
       />
+      <Route path={`${url}/test/:formId`} component={ViewFormTest} />
+      <Route path={`${url}/submit/:formId`} component={FormSubmit} />
       <Route path={`${url}/:formId`} component={ViewForm} />
     </Switch>
   );

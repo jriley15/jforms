@@ -137,8 +137,17 @@ namespace JForms.Application.Services
 
                                 case (int)FieldType.RadioButton:
                                 case (int)FieldType.DropDown:
-                                    //make sure submitted value is one of the possible options provided
 
+                                    if (submission.ContainsKey(field.Name))
+                                    {
+                                        //make sure submitted value is one of the possible options provided
+                                        var selectedValue = field.Options.FirstOrDefault(o => o.Value == submission[field.Name]);
+                                        if (selectedValue == null)
+                                        {
+                                            response.AddError(field.Name, "Invalid value selected");
+                                        }
+
+                                    }
 
                                     break;
                             }
@@ -151,7 +160,7 @@ namespace JForms.Application.Services
                         //check boxes have special naming conventions for values
                         foreach (FormFieldOption option in field.Options)
                         {
-                            if (submission.ContainsKey(field.Name + "-" + option.Value) && bool.Parse(submission[field.Name + "-" + option.Value]) == true)
+                            if (submission.ContainsKey(field.Name + "-" + option.Value))
                             {
                                 selectedOptions++;
                             }
@@ -185,12 +194,12 @@ namespace JForms.Application.Services
                 //add submission values to entity and map the fields
                 formEntity.Fields.ToList().ForEach(field =>
                         {
-                    //check boxes can have multiple submission values for one field
-                    if (field.FormFieldType.FormFieldTypeId == (int)FieldType.CheckBox)
+                            //check boxes can have multiple submission values for one field
+                            if (field.FormFieldType.FormFieldTypeId == (int)FieldType.CheckBox)
                             {
                                 foreach (FormFieldOption option in field.Options)
                                 {
-                                    if (submission.ContainsKey(field.Name + "-" + option.Value) && bool.Parse(submission[field.Name + "-" + option.Value]) == true)
+                                    if (submission.ContainsKey(field.Name + "-" + option.Value))
                                     {
                                         submissionEntity.Values.Add(new FormSubmissionValue()
                                         {
