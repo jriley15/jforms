@@ -76,8 +76,19 @@ namespace JForms.Data
             modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.Number, FormValidationRuleTypeId = (int)RuleType.Minimum_Value });
             modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.Number, FormValidationRuleTypeId = (int)RuleType.Maxmimum__Value });
 
+            //Date validation types
+            modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.Date, FormValidationRuleTypeId = (int)RuleType.Required });
+            modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.Date, FormValidationRuleTypeId = (int)RuleType.Minimum_Date });
+            modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.Date, FormValidationRuleTypeId = (int)RuleType.Maxmimum_Date });
 
+            //Radio button validation types
+            modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.RadioButton, FormValidationRuleTypeId = (int)RuleType.Required });
 
+            //Drop down validation types
+            modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.DropDown, FormValidationRuleTypeId = (int)RuleType.Required });
+
+            //Checkbox validation types
+            modelBuilder.Entity<FormFieldTypeRuleType>().HasData(new FormFieldTypeRuleType { FormFieldTypeId = (int)FieldType.CheckBox, FormValidationRuleTypeId = (int)RuleType.Required });
 
         }
 

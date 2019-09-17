@@ -9,6 +9,7 @@ using JForms.Data.Entity;
 using JForms.Data.Local;
 using JForms.Application.Extensions;
 using JForms.Data.Dto;
+using JForms.Data;
 
 namespace JForms.Application.Services
 {
@@ -21,11 +22,11 @@ namespace JForms.Application.Services
     public class FormSnippetService : IFormSnippetservice
     {
 
-        private readonly Data.DatabaseContext _dbContext;
+        private readonly DatabaseContext _dbContext;
 
         private readonly IFormService _formService;
 
-        public FormSnippetService(Data.DatabaseContext dbContext, IFormService formService)
+        public FormSnippetService(DatabaseContext dbContext, IFormService formService)
         {
             _dbContext = dbContext;
             _formService = formService;

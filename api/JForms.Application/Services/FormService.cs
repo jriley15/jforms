@@ -4,6 +4,7 @@ using JForms.Data;
 using JForms.Data.Dto;
 using JForms.Data.Dto.Form;
 using JForms.Data.Entity;
+using JForms.Data.Local;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -58,18 +59,76 @@ namespace JForms.Application.Services
 
         public async Task<Response> Create(CreateFormDto form)
         {
+            var response = new Response();
 
             var formEntity = FormHelper.MapForm(form);//_mapper.Map<Form>(form);
 
-            var user = await _authService.GetCurrentUser();
+            if (String.IsNullOrWhiteSpace(formEntity.Name))
+            {
+                response.AddError("*", "Form name cannot be empty.");
+            }
+            if (formEntity.Fields.Count == 0)
+            {
+                response.AddError("*", "Forms need at least 1 field.");
+            }
 
-            formEntity.User = user;
+            //validate form fields
+            foreach (var field in formEntity.Fields)
+            {
+                if (String.IsNullOrWhiteSpace(field.Name))
+                {
+                    response.AddError("*", "Field " + field.Name + " must have a name.");
+                }
+                if (!Enum.IsDefined(typeof(FieldType), field.FormFieldTypeId))
+                {
+                    response.AddError("*", "Field " + field.Name + " has an invalid field type.");
+                }
+                //validate options
+                foreach (var option in field.Options)
+                {
+                    if (String.IsNullOrWhiteSpace(option.Value))
+                    {
+                        response.AddError("*", "Field " + field.Name + " has an empty option value.");
+                    }
+                }
+                //validate basic rules
+                if (field.Validation.Type == ValidationType.Rules)
+                {
+                    foreach (var rule in field.Validation.Rules)
+                    {
+                        if (!Enum.IsDefined(typeof(RuleType), rule.FormFieldValidationRuleTypeId))
+                        {
+                            response.AddError("*", "Field " + field.Name + " has an invalid rule type.");
+                        }
+                        if (String.IsNullOrWhiteSpace(rule.Constraint) && rule.FormFieldValidationRuleTypeId != (int)RuleType.Required)
+                        {
+                            response.AddError("*", "Field " + field.Name + " has an empty rule constraint value.");
+                        }
+                    }
+                }
+                else if (field.Validation.Type == ValidationType.CustomScript)
+                {
+                    //custom js validation 
+                }
+                else
+                {
+                    response.AddError("*", "Field " + field.Name + " has an invalid validation type.");
+                }
+            }
 
-            await _dbContext.Forms.AddAsync(formEntity);
+            if (response.Errors.Count == 0)
+            {
+                var user = await _authService.GetCurrentUser();
 
-            var affectedRows = await _dbContext.SaveChangesAsync();
+                formEntity.User = user;
 
-            return new DataResponse<int>() { Data = formEntity.FormId, Success = true };
+                await _dbContext.Forms.AddAsync(formEntity);
+
+                var affectedRows = await _dbContext.SaveChangesAsync();
+
+                return new DataResponse<int>() { Data = formEntity.FormId, Success = true };
+            }
+            return response;
         }
 
         public async Task<Response> GetForm(int formId)
