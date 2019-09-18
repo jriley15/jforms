@@ -35,5 +35,10 @@ namespace JForms.API.Controllers
         }
 
 
+        public async Task<IActionResult> GithubLogin()
+        {
+            return null;
+        }
+
     }
 }

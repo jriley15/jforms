@@ -4,10 +4,14 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import useRequest from "../hooks/useRequest";
 import useAuth from "../hooks/useAuth";
+import GitHubLogin from "./oauth/GitHubLogin";
 
 export default function Login({ open, close }) {
   const { post } = useRequest();
   const { setAuth } = useAuth();
+
+  const onSuccess = response => console.log(response);
+  const onFailure = response => console.error(response);
 
   return (
     <Formik
@@ -103,7 +107,12 @@ export default function Login({ open, close }) {
               <Divider inverted horizontal>
                 Or
               </Divider>
-              <Button content="Sign in with GitHub" icon="github" fluid />
+              <GitHubLogin
+                clientId="9b290dccc70c0fe5f259"
+                redirectUri="http://localhost:3000"
+                onSuccess={onSuccess}
+                onFailure={onFailure}
+              />
             </Modal.Content>
             <Modal.Actions style={{ backgroundColor: "rgb(48, 48, 48)" }}>
               <Button onClick={close}>Cancel</Button>
