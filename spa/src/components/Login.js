@@ -1,5 +1,14 @@
-import React from "react";
-import { Modal, Button, Form, Header, Divider, List } from "semantic-ui-react";
+import React, { useState, useEffect } from "react";
+import {
+  Modal,
+  Button,
+  Form,
+  Header,
+  Divider,
+  List,
+  Dimmer,
+  Loader
+} from "semantic-ui-react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import useRequest from "../hooks/useRequest";
@@ -9,17 +18,39 @@ import GitHubLogin from "./oauth/GitHubLogin";
 export default function Login({ open, close }) {
   const { post } = useRequest();
   const { setAuth } = useAuth();
+  const { get } = useRequest();
+  const [errors, setErrors] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
 
-  const onSuccess = response => console.log(response);
-  const onFailure = response => console.error(response);
+  useEffect(() => {
+    setErrors([]);
+
+    return () => {};
+  }, []);
+
+  const onGithubSuccess = async res => {
+    setSubmitting(true);
+    var response = await get("/Auth/GithubLogin", { code: res.code });
+
+    if (response.success) {
+      setAuth(response.data);
+      close();
+    } else {
+      setErrors(response.errors);
+    }
+    setSubmitting(false);
+  };
+  const onGithubFailure = response => {
+    console.error(response);
+  };
 
   return (
     <Formik
       initialValues={{
-        email: "jordanr35@live.com",
-        password: "Password123!"
+        email: "",
+        password: ""
       }}
-      onSubmit={async (values, { setSubmitting, setErrors }) => {
+      onSubmit={async values => {
         let response = await post("/Auth/Login", values);
 
         if (response.success) {
@@ -42,7 +73,6 @@ export default function Login({ open, close }) {
         const {
           values,
           touched,
-          errors,
           dirty,
           isSubmitting,
           handleChange,
@@ -51,7 +81,14 @@ export default function Login({ open, close }) {
           handleReset
         } = props;
         return (
-          <Modal open={open} onClose={close} size="tiny">
+          <Modal
+            open={open}
+            onClose={close}
+            size="tiny"
+            style={{
+              pointerEvents: submitting ? "none" : "auto"
+            }}
+          >
             <Header
               icon="lock"
               content="Sign in"
@@ -66,7 +103,7 @@ export default function Login({ open, close }) {
                     ))}
                   </List>
                 )}
-                <Form.Field>
+                <Form.Field disabled>
                   <Form.Input
                     label="Email"
                     id="email"
@@ -77,7 +114,7 @@ export default function Login({ open, close }) {
                     error={errors.email && touched.email ? errors.email : false}
                   />
                 </Form.Field>
-                <Form.Field>
+                <Form.Field disabled>
                   <Form.Input
                     label="Password"
                     type="password"
@@ -103,6 +140,7 @@ export default function Login({ open, close }) {
                 content="Sign in with Google"
                 icon="google"
                 fluid
+                disabled
               />
               <Divider inverted horizontal>
                 Or
@@ -110,8 +148,8 @@ export default function Login({ open, close }) {
               <GitHubLogin
                 clientId="9b290dccc70c0fe5f259"
                 redirectUri="http://localhost:3000"
-                onSuccess={onSuccess}
-                onFailure={onFailure}
+                onSuccess={onGithubSuccess}
+                onFailure={onGithubFailure}
               />
             </Modal.Content>
             <Modal.Actions style={{ backgroundColor: "rgb(48, 48, 48)" }}>
@@ -120,11 +158,16 @@ export default function Login({ open, close }) {
                 type="submit"
                 color="blue"
                 onClick={handleSubmit}
-                disabled={isSubmitting}
+                disabled={true /*isSubmitting*/}
               >
                 Login
               </Button>
             </Modal.Actions>
+            <Dimmer active={submitting}>
+              <Loader active={submitting} size="big">
+                Loading
+              </Loader>
+            </Dimmer>
           </Modal>
         );
       }}

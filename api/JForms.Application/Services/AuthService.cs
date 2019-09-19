@@ -1,14 +1,18 @@
 ﻿using JForms.Data.Dto;
 using JForms.Data.Dto.Auth;
+using JForms.Data.Dto.Gtihub;
 using JForms.Data.Entity;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +24,8 @@ namespace JForms.Application.Services
     {
 
         Task<Response> Login(LoginDto loginDto);
+
+        Task<Response> GithubLogin(string code);
 
         Task<Response> Register(RegisterDto registerDto);
 
@@ -36,32 +42,110 @@ namespace JForms.Application.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IHttpContextAccessor contextAccessor)
+        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IHttpContextAccessor contextAccessor, IHttpClientFactory clientFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _contextAccessor = contextAccessor;
+            _clientFactory = clientFactory;
         }
 
 
         public async Task<Response> Login(LoginDto loginDto)
         {
-            var invalidResponse = new Response();
+            var response = new Response();
             var result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, false, false);
 
             if (result.Succeeded)
             {
                 var appUser = _userManager.Users.SingleOrDefault(r => r.Email == loginDto.Email && r.UserName == loginDto.Email);
-                invalidResponse = new DataResponse<object>() { Data = GenerateJwtToken(loginDto.Email, appUser), Success = true };
+                response = new DataResponse<object>() { Data = GenerateJwtToken(loginDto.Email, appUser), Success = true };
             }
             else
             {
-                invalidResponse.AddError("*", "Invalid username or password");
+                response.AddError("*", "Invalid username or password");
             }
 
-            return invalidResponse;
+            return response;
+        }
+
+        public async Task<Response> GithubLogin(string code)
+        {
+
+            var response = new Response();
+            var client = _clientFactory.CreateClient();
+
+            var parameters = new
+            {
+                client_id = _configuration["GithubClientId"],
+                client_secret = _configuration["GithubClientSecret"],
+                code = code,
+                redirect_uri = _configuration["GithubRedirectUri"],
+                state = ""
+            };
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+            var oAuthResponse = await client.PostAsync("https://github.com/login/oauth/access_token",
+                new StringContent(JsonConvert.SerializeObject(parameters), Encoding.UTF8, "application/json"));
+
+            var result = JsonConvert.DeserializeObject<GithubToken>(await oAuthResponse.Content.ReadAsStringAsync());
+
+
+            client.DefaultRequestHeaders.Remove("Accept");
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + result.access_token);
+            client.DefaultRequestHeaders.Add("User-Agent", "Asp net core");
+            var githubUser = JsonConvert.DeserializeObject<GithubUser>(await client.GetStringAsync("https://api.github.com/user"));
+
+            var appUser = await _userManager.FindByNameAsync(githubUser.login);
+
+            appUser.AvatarUrl = githubUser.avatar_url;
+
+            if (appUser != null)
+            {
+                //success
+                await _signInManager.SignInAsync(appUser, false);
+                /*await _signInManager.UpdateExternalAuthenticationTokensAsync(new ExternalLoginInfo()
+                {
+                    LoginProvider = "Github",
+                    ProviderKey = githubUser.id,
+                    AuthenticationTokens = new List<AuthenticationToken>() { new AuthenticationToken() { Name = "Bearer", Value = result.access_token } },
+                    ProviderDisplayName = githubUser.login,
+                    Principal = new ClaimsPrincipal()
+
+                });*/
+                response = new DataResponse<object>() { Data = GenerateJwtToken(githubUser.login, appUser), Success = true };
+            }
+            else
+            {
+                //new user
+                var user = new ApplicationUser
+                {
+                    //hack for now - force users to activate email before logging in?
+                    UserName = githubUser.login,
+                    Email = githubUser.email,
+                    AvatarUrl = githubUser.avatar_url
+                };
+
+                var identityResult = await _userManager.CreateAsync(user);
+
+                if (identityResult.Succeeded)
+                {
+                    await _signInManager.SignInAsync(appUser, false);
+                    response = new DataResponse<object>() { Data = GenerateJwtToken(githubUser.login, user), Success = true };
+                }
+                else
+                {
+                    foreach (IdentityError Error in identityResult.Errors)
+                    {
+                        response.AddError("*", Error.Description);
+                    }
+                }
+            }
+
+            return response;
         }
 
         public async Task<Response> Register(RegisterDto registerDto)
@@ -99,20 +183,23 @@ namespace JForms.Application.Services
                     {
                         response.AddError("*", Error.Description);
                     }
-
                 }
             }
 
             return response;
         }
 
-        private object GenerateJwtToken(string email, IdentityUser user)
+        private object GenerateJwtToken(string email, ApplicationUser user)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
+            if (user.AvatarUrl != null)
+            {
+                claims.Add(new Claim("avatar", user.AvatarUrl));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

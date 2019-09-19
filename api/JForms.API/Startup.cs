@@ -73,7 +73,7 @@ namespace JForms
                     };
                 });
 
-
+            services.AddHttpClient();
 
             services.AddTransient<ISubmitService, SubmitService>();
             services.AddTransient<IFormService, FormService>();

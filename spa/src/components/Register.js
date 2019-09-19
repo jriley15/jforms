@@ -1,12 +1,48 @@
-import React from "react";
-import { Modal, Button, Form, Header, Divider, List } from "semantic-ui-react";
+import React, { useState, useEffect } from "react";
+import {
+  Modal,
+  Button,
+  Form,
+  Header,
+  Divider,
+  List,
+  Dimmer,
+  Loader
+} from "semantic-ui-react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import useRequest from "../hooks/useRequest";
+import GitHubLogin from "./oauth/GitHubLogin";
+import useAuth from "../hooks/useAuth";
 
 export default function Register({ open, close }) {
   const { post } = useRequest();
+  const { setAuth } = useAuth();
+  const { get } = useRequest();
+  const [errors, setErrors] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
 
+  useEffect(() => {
+    setErrors([]);
+
+    return () => {};
+  }, []);
+
+  const onGithubSuccess = async res => {
+    setSubmitting(true);
+    var response = await get("/Auth/GithubLogin", { code: res.code });
+
+    if (response.success) {
+      setAuth(response.data);
+      close();
+    } else {
+      setErrors(response.errors);
+    }
+    setSubmitting(false);
+  };
+  const onGithubFailure = response => {
+    console.error(response);
+  };
   return (
     <Formik
       initialValues={{
@@ -14,7 +50,7 @@ export default function Register({ open, close }) {
         password: "Password123!",
         confirmPassword: "Password123!"
       }}
-      onSubmit={async (values, { setSubmitting, setErrors }) => {
+      onSubmit={async values => {
         let response = await post("/Auth/Register", values);
 
         if (response.success) {
@@ -36,7 +72,6 @@ export default function Register({ open, close }) {
         const {
           values,
           touched,
-          errors,
           dirty,
           isSubmitting,
           handleChange,
@@ -45,7 +80,14 @@ export default function Register({ open, close }) {
           handleReset
         } = props;
         return (
-          <Modal open={open} onClose={close} size="tiny">
+          <Modal
+            open={open}
+            onClose={close}
+            size="tiny"
+            style={{
+              pointerEvents: submitting ? "none" : "auto"
+            }}
+          >
             <Header
               icon="lock"
               content="Sign up"
@@ -69,6 +111,7 @@ export default function Register({ open, close }) {
                     onBlur={handleBlur}
                     placeholder="Email Address"
                     error={errors.email && touched.email ? errors.email : false}
+                    disabled
                   />
                 </Form.Field>
                 <Form.Field>
@@ -85,6 +128,7 @@ export default function Register({ open, close }) {
                         ? errors.password
                         : false
                     }
+                    disabled
                   />
                 </Form.Field>
                 <Form.Field>
@@ -101,6 +145,7 @@ export default function Register({ open, close }) {
                         ? errors.confirmPassword
                         : false
                     }
+                    disabled
                   />
                 </Form.Field>
               </Form>
@@ -113,11 +158,17 @@ export default function Register({ open, close }) {
                 content="Sign in with Google"
                 icon="google"
                 fluid
+                disabled
               />
               <Divider inverted horizontal>
                 Or
               </Divider>
-              <Button content="Sign in with GitHub" icon="github" fluid />
+              <GitHubLogin
+                clientId="9b290dccc70c0fe5f259"
+                redirectUri="http://localhost:3000"
+                onSuccess={onGithubSuccess}
+                onFailure={onGithubFailure}
+              />
             </Modal.Content>
             <Modal.Actions style={{ backgroundColor: "rgb(48, 48, 48)" }}>
               <Button onClick={close}>Cancel</Button>
@@ -125,11 +176,16 @@ export default function Register({ open, close }) {
                 color="blue"
                 type="submit"
                 onClick={handleSubmit}
-                disabled={isSubmitting}
+                disabled={true /*isSubmitting*/}
               >
                 Submit
               </Button>
             </Modal.Actions>
+            <Dimmer active={submitting}>
+              <Loader active={submitting} size="big">
+                Loading
+              </Loader>
+            </Dimmer>
           </Modal>
         );
       }}

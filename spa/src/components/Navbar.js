@@ -17,7 +17,7 @@ import useAuth from "../hooks/useAuth";
 export default function Navbar() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
-  const { getAuth, logout } = useAuth();
+  const { getAuth, logout, authState } = useAuth();
 
   //should prob be in a side effect to avoid blocking before first render
   const auth = getAuth();
@@ -37,7 +37,7 @@ export default function Navbar() {
           Home
         </Menu.Item>
         <Menu.Item as={Link} to="/">
-          About
+          Documentation
         </Menu.Item>
         <Menu.Item position="right">
           {!auth ? (
@@ -68,12 +68,30 @@ export default function Navbar() {
                 color="teal"
                 inverted
               />
-              <Button inverted style={{ marginLeft: "0.5em" }} onClick={logout}>
+              {/*<Button inverted style={{ marginLeft: "0.5em" }} onClick={logout}>
                 Log out
-              </Button>
+          </Button>*/}
             </>
           )}
         </Menu.Item>
+        {auth && (
+          <Dropdown
+            item
+            text={
+              authState.identity.avatar ? (
+                <Image src={authState.identity.avatar} avatar />
+              ) : (
+                "Account"
+              )
+            }
+          >
+            <Dropdown.Menu>
+              <Dropdown.Header>Profile</Dropdown.Header>
+              <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
+              <Dropdown.Item>Settings</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
       </Menu>
       <Login
         open={loginOpen}

@@ -7,7 +7,7 @@ class GitHubLogin extends Component {
   static defaultProps = {
     buttonText: "Sign in with GitHub",
     redirectUri: "",
-    scope: "user:email",
+    scope: "read:user",
     onRequest: () => {},
     onSuccess: () => {},
     onFailure: () => {}
@@ -18,12 +18,18 @@ class GitHubLogin extends Component {
     const search = toQuery({
       client_id: clientId,
       scope,
-      redirect_uri: redirectUri
+      redirect_uri: redirectUri,
+      login: ""
     });
+
+    const y = window.top.outerHeight / 2 + window.top.screenY - 750 / 2;
+    const x = window.top.outerWidth / 2 + window.top.screenX - 500 / 2;
+
     const popup = (this.popup = PopupWindow.open(
       "github-oauth-authorize",
       `https://github.com/login/oauth/authorize?${search}`,
-      { height: 1000, width: 600 }
+
+      { height: 750, width: 500, left: x, top: y }
     ));
 
     this.onRequest();
