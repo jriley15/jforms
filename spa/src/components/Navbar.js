@@ -36,7 +36,7 @@ export default function Navbar() {
         <Menu.Item as={Link} to="/">
           Home
         </Menu.Item>
-        <Menu.Item as={Link} to="/">
+        <Menu.Item as={Link} to="/documentation">
           Documentation
         </Menu.Item>
         <Menu.Item position="right">

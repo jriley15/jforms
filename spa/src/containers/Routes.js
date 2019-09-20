@@ -5,6 +5,7 @@ import styled from "styled-components";
 import CreateForm from "../pages/CreateForm";
 import Form from "./Form";
 import { Container } from "semantic-ui-react";
+import Documentation from "../pages/Documentation";
 
 const Wrapper = styled(Container)`
   padding-top: 24px;
@@ -16,6 +17,7 @@ export default function Routes({ children }) {
       {children}
       <Wrapper>
         <Route exact path="/" component={Home} />
+        <Route exact path="/documentation" component={Documentation} />
         <Route path="/form" component={Form} />
       </Wrapper>
     </Router>
