@@ -15,9 +15,9 @@ export default function Routes({ children }) {
   return (
     <Router>
       {children}
+      <Route exact path="/documentation" component={Documentation} />
       <Wrapper>
         <Route exact path="/" component={Home} />
-        <Route exact path="/documentation" component={Documentation} />
         <Route path="/form" component={Form} />
       </Wrapper>
     </Router>

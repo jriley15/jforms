@@ -6,7 +6,8 @@ import {
   Button,
   Container,
   Segment,
-  Dropdown
+  Dropdown,
+  Header
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -30,12 +31,22 @@ export default function Navbar() {
       style={{ padding: 0, height: 64 }}
     >
       <Menu fixed="top" inverted size="large" style={{ height: "inherit" }}>
-        <Menu.Item>
-          <Image size="mini" src="https://react.semantic-ui.com/logo.png" />
-        </Menu.Item>
         <Menu.Item as={Link} to="/">
-          Home
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              alignContent: "center"
+            }}
+          >
+            <Image size="tiny" src="https://images.jrdn.tech/jformslogo.png" />
+            <Header inverted style={{ margin: 0, paddingRight: 10 }}>
+              JForms
+            </Header>
+          </div>
         </Menu.Item>
+
         <Menu.Item as={Link} to="/documentation">
           Documentation
         </Menu.Item>
