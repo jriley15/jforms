@@ -38,7 +38,7 @@ export default function ViewForms() {
   return (
     <>
       <Breadcrumb size="massive">
-        <Breadcrumb.Section active>Forms</Breadcrumb.Section>
+        <Breadcrumb.Section active>Forms ({forms.length})</Breadcrumb.Section>
       </Breadcrumb>
       <Divider inverted />
       <ButtonGroup>

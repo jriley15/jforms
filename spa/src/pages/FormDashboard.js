@@ -80,7 +80,7 @@ export default function FormDashboard({ match: { params } }) {
       <Tab
         panes={panes}
         style={{ marginTop: 32 }}
-        defaultActiveIndex={2}
+        defaultActiveIndex={1}
         menu={{
           attached: true,
           tabular: true,

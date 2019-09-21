@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Icon,
   Menu,
@@ -11,9 +11,18 @@ import {
 } from "semantic-ui-react";
 import Panel from "../components/documentation/Panel";
 import Introduction from "../components/documentation/Introduction";
+import GetStarted from "../components/documentation/GetStarted";
+import { Link } from "react-router-dom";
+import CreateAForm from "../components/documentation/CreateAForm";
+import Fields from "../components/documentation/Fields";
+import Validation from "../components/documentation/Validation";
 
-export default function Documentation() {
-  const [index, setIndex] = useState(0);
+export default function Documentation({ match: { params } }) {
+  const [index, setIndex] = useState(params.id ? parseInt(params.id, 10) : 0);
+
+  useEffect(() => {
+    setIndex(params.id ? parseInt(params.id, 10) : 0);
+  }, [params.id]);
 
   return (
     <>
@@ -33,24 +42,19 @@ export default function Documentation() {
         </Menu.Item>
         <Menu.Item>
           <Menu.Header>Getting Started</Menu.Header>
-          <Menu.Menu
-            header
-            style={{ color: "white", backgroundColor: "transparent" }}
-          >
+          <Menu.Menu style={{ color: "white", backgroundColor: "transparent" }}>
             <Menu.Item
-              as="a"
-              onClick={() => {
-                setIndex(0);
-              }}
+              header
+              as={Link}
+              to="/documentation/0"
               active={index === 0}
             >
               Introduction
             </Menu.Item>
             <Menu.Item
-              as="a"
-              onClick={() => {
-                setIndex(1);
-              }}
+              header
+              as={Link}
+              to="/documentation/1"
               active={index === 1}
             >
               Get Started
@@ -59,56 +63,59 @@ export default function Documentation() {
         </Menu.Item>
         <Menu.Item>
           <Menu.Header>Forms</Menu.Header>
-          <Menu.Menu
-            header
-            style={{ color: "white", backgroundColor: "transparent" }}
-          >
+          <Menu.Menu style={{ color: "white", backgroundColor: "transparent" }}>
             <Menu.Item
-              as="a"
-              onClick={() => {
-                setIndex(2);
-              }}
+              header
+              as={Link}
+              to="/documentation/2"
               active={index === 2}
             >
               Creating a form
             </Menu.Item>
             <Menu.Item
-              as="a"
-              onClick={() => {
-                setIndex(3);
-              }}
+              header
+              as={Link}
+              to="/documentation/3"
               active={index === 3}
             >
-              Types
+              Fields
             </Menu.Item>
             <Menu.Item
-              as="a"
-              onClick={() => {
-                setIndex(4);
-              }}
+              header
+              as={Link}
+              to="/documentation/4"
               active={index === 4}
             >
               Validation
             </Menu.Item>
             <Menu.Item
-              as="a"
-              onClick={() => {
-                setIndex(5);
-              }}
+              header
+              as={Link}
+              to="/documentation/5"
               active={index === 5}
             >
-              Submission
+              Submissions
+            </Menu.Item>
+            <Menu.Item
+              header
+              as={Link}
+              to="/documentation/6"
+              active={index === 6}
+            >
+              Hooks
             </Menu.Item>
           </Menu.Menu>
         </Menu.Item>
       </Sidebar>
-      <div style={{ marginLeft: 200, padding: 32, color: "white" }}>
+      <div
+        style={{ marginLeft: 200, padding: 32, color: "white", maxWidth: 900 }}
+      >
         <Panel index={index}>
           <Introduction tabIndex={0} />
-          <div tabIndex={1}>Test 1</div>
-          <div tabIndex={2}>Test 2</div>
-          <div tabIndex={3}>Test 3</div>
-          <div tabIndex={4}>Test 4</div>
+          <GetStarted tabIndex={1} />
+          <CreateAForm tabIndex={2} />
+          <Fields tabIndex={3} />
+          <Validation tabIndex={4} />
           <div tabIndex={5}>Test 5</div>
         </Panel>
       </div>

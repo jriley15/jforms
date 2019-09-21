@@ -80,20 +80,20 @@ namespace JForms.Application.Services
                             {
                                 case (int)FieldType.Number:
 
-                                    bool isNumber = int.TryParse(submittedValue, out int parsedValue);
-                                    var minRule = field.Validation.Rules.FirstOrDefault(r => r.FormFieldValidationRuleTypeId == (int)RuleType.Minimum_Value);
-                                    var maxRule = field.Validation.Rules.FirstOrDefault(r => r.FormFieldValidationRuleTypeId == (int)RuleType.Maxmimum__Value);
+                                    bool isNumber = double.TryParse(submittedValue, out double parsedValue);
+                                    var minRule = field.Validation.Rules.FirstOrDefault(r => r.FormFieldValidationRuleTypeId == (double)RuleType.Minimum_Value);
+                                    var maxRule = field.Validation.Rules.FirstOrDefault(r => r.FormFieldValidationRuleTypeId == (double)RuleType.Maxmimum__Value);
                                     if (!isNumber)
                                     {
                                         response.AddError(field.Name, "Value must be a number");
                                     }
                                     else
                                     {
-                                        if (minRule != null && parsedValue < int.Parse(minRule.Constraint))
+                                        if (minRule != null && parsedValue < double.Parse(minRule.Constraint))
                                         {
                                             response.AddError(field.Name, "Value must be greater than or equal to " + minRule.Constraint);
                                         }
-                                        else if (maxRule != null && parsedValue > int.Parse(maxRule.Constraint))
+                                        else if (maxRule != null && parsedValue > double.Parse(maxRule.Constraint))
                                         {
                                             response.AddError(field.Name, "Value must be less than or equal to " + maxRule.Constraint);
                                         }

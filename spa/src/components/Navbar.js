@@ -31,7 +31,7 @@ export default function Navbar() {
       style={{ padding: 0, height: 64 }}
     >
       <Menu fixed="top" inverted size="large" style={{ height: "inherit" }}>
-        <Menu.Item as={Link} to="/">
+        <Menu.Item as={Link} to="/" style={{ backgroundColor: "transparent" }}>
           <div
             style={{
               display: "flex",

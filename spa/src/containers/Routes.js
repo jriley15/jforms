@@ -15,6 +15,7 @@ export default function Routes({ children }) {
   return (
     <Router>
       {children}
+      <Route path="/documentation/:id" component={Documentation} />
       <Route exact path="/documentation" component={Documentation} />
       <Wrapper>
         <Route exact path="/" component={Home} />
