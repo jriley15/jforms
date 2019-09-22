@@ -16,6 +16,8 @@ import { Link } from "react-router-dom";
 import CreateAForm from "../components/documentation/CreateAForm";
 import Fields from "../components/documentation/Fields";
 import Validation from "../components/documentation/Validation";
+import Submissions from "../components/documentation/Submissions";
+import Hooks from "../components/documentation/Hooks";
 
 export default function Documentation({ match: { params } }) {
   const [index, setIndex] = useState(params.id ? parseInt(params.id, 10) : 0);
@@ -116,7 +118,8 @@ export default function Documentation({ match: { params } }) {
           <CreateAForm tabIndex={2} />
           <Fields tabIndex={3} />
           <Validation tabIndex={4} />
-          <div tabIndex={5}>Test 5</div>
+          <Submissions tabIndex={5} />
+          <Hooks tabIndex={6} />
         </Panel>
       </div>
     </>
