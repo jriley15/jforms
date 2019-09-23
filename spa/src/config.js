@@ -1,1 +1,1 @@
-export const apiUrl = "https://localhost:44333";
+export const apiUrl = "https://formsapi.jrdn.tech"; //"https://localhost:44333";
