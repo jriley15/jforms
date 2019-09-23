@@ -108,7 +108,7 @@ namespace JForms
 
             app.UseRouting();
 
-            app.UseCors("default");
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
