@@ -75,6 +75,8 @@ namespace JForms
 
             services.AddHttpClient();
 
+            services.AddCors();
+
             services.AddTransient<ISubmitService, SubmitService>();
             services.AddTransient<IFormService, FormService>();
             services.AddTransient<IFormFieldService, FormFieldService>();
