@@ -78,7 +78,7 @@ namespace JForms
 
             services.AddCors(options =>
             {
-                options.AddPolicy("test",
+                options.AddDefaultPolicy(
                     policy =>
                     {
                         policy.AllowAnyHeader();
@@ -108,14 +108,14 @@ namespace JForms
 
             app.UseRouting();
 
-            app.UseCors("test");
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers().RequireCors("test");
+                endpoints.MapControllers();
             });
         }
     }
