@@ -37,9 +37,10 @@ export default function SnippetsTab({ formId, encodedFormId }) {
 
   return (
     <>
-      <Header as="h2" style={{ paddingTop: 16 }}>
-        Embedded Form
-      </Header>
+      <a href="/documentation/5" target="_blank" style={{ paddingTop: 16 }}>
+        Need Help? Check out the documentation here
+      </a>
+      <Header as="h2">Embedded Form</Header>
       <p style={{ fontSize: "1.1em" }}>
         Send this link below to your users for them to fill your form out using
         our UI if you don't have your own website or don't want to deal with

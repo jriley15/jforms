@@ -14,6 +14,7 @@ import * as Yup from "yup";
 import useRequest from "../hooks/useRequest";
 import GitHubLogin from "./oauth/GitHubLogin";
 import useAuth from "../hooks/useAuth";
+import GoogleLogin from "react-google-login";
 
 export default function Register({ open, close }) {
   const { post } = useRequest();
@@ -43,6 +44,21 @@ export default function Register({ open, close }) {
   const onGithubFailure = response => {
     console.error(response);
   };
+  const responseGoogle = async res => {
+    if (res.code) {
+      setSubmitting(true);
+      var response = await get("/Auth/GoogleLogin", { code: res.code });
+
+      if (response.success) {
+        setAuth(response.data);
+        close();
+      } else {
+        setErrors(response.errors);
+      }
+      setSubmitting(false);
+    }
+  };
+
   return (
     <Formik
       initialValues={{
@@ -98,7 +114,9 @@ export default function Register({ open, close }) {
                 {errors["*"] && (
                   <List>
                     {errors["*"].map((error, index) => (
-                      <List.Item style={{ color: "red" }}>{error}</List.Item>
+                      <List.Item key={index} style={{ color: "red" }}>
+                        {error}
+                      </List.Item>
                     ))}
                   </List>
                 )}
@@ -153,12 +171,23 @@ export default function Register({ open, close }) {
               <Divider inverted horizontal>
                 Or
               </Divider>
-              <Button
-                color="green"
-                content="Sign in with Google"
-                icon="google"
-                fluid
-                disabled
+              <GoogleLogin
+                clientId="470701960790-unn86aca3ofmh7388132gev7vinrq7ba.apps.googleusercontent.com"
+                render={renderProps => (
+                  <Button
+                    color="green"
+                    content="Sign in with Google"
+                    icon="google"
+                    fluid
+                    onClick={renderProps.onClick}
+                  />
+                )}
+                buttonText="Login"
+                onSuccess={responseGoogle}
+                onFailure={responseGoogle}
+                cookiePolicy={"single_host_origin"}
+                redirectUri="http://localhost:3000"
+                responseType="code"
               />
               <Divider inverted horizontal>
                 Or

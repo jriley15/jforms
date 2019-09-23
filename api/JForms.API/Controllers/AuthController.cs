@@ -37,8 +37,12 @@ namespace JForms.API.Controllers
 
         public async Task<IActionResult> GithubLogin(string code)
         {
-
             return this.GenerateResponse(await _authService.GithubLogin(code));
+        }
+
+        public async Task<IActionResult> GoogleLogin(string code)
+        {
+            return this.GenerateResponse(await _authService.GoogleLogin(code));
         }
 
     }

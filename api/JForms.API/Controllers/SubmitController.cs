@@ -35,7 +35,7 @@ namespace JForms.API.Controllers
 
 
 
-            return Redirect("http://localhost:3000/form/submit/" + formId + "?response=" + JsonConvert.SerializeObject(new DataResponse<string>() { Success = response.Success, Errors = response.Errors, Data = Request.Headers["Referer"].ToString() }));
+            return Redirect("http://forms.jrdn.tech/form/submit/" + formId + "?response=" + JsonConvert.SerializeObject(new DataResponse<string>() { Success = response.Success, Errors = response.Errors, Data = Request.Headers["Referer"].ToString() }));
             //this.GenerateResponse(await _submitService.SubmitForm(formId, form));
         }
 

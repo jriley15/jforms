@@ -1,4 +1,8 @@
-﻿using JForms.Data.Dto;
+﻿using Google.Apis.Auth;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Web;
+using JForms.Data.Dto;
 using JForms.Data.Dto.Auth;
 using JForms.Data.Dto.Gtihub;
 using JForms.Data.Entity;
@@ -15,6 +19,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace JForms.Application.Services
@@ -26,6 +31,8 @@ namespace JForms.Application.Services
         Task<Response> Login(LoginDto loginDto);
 
         Task<Response> GithubLogin(string code);
+
+        Task<Response> GoogleLogin(string code);
 
         Task<Response> Register(RegisterDto registerDto);
 
@@ -62,13 +69,75 @@ namespace JForms.Application.Services
             if (result.Succeeded)
             {
                 var appUser = _userManager.Users.SingleOrDefault(r => r.Email == loginDto.Email && r.UserName == loginDto.Email);
-                response = new DataResponse<object>() { Data = GenerateJwtToken(loginDto.Email, appUser), Success = true };
+                response = new DataResponse<object>() { Data = GenerateJwtToken(appUser), Success = true };
             }
             else
             {
                 response.AddError("*", "Invalid username or password");
             }
 
+            return response;
+        }
+
+
+        public async Task<Response> GoogleLogin(string code)
+        {
+            var response = new Response();
+            try
+            {
+                var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer()
+                {
+                    ClientSecrets = new ClientSecrets()
+                    {
+                        ClientId = _configuration["GoogleClientId"],
+                        ClientSecret = _configuration["GoogleClientSecret"]
+                    },
+                    Scopes = new[] { "email", "profile" },
+
+                });
+
+                var token = await flow.ExchangeCodeForTokenAsync("user", code, _configuration["GoogleRedirectUri"], CancellationToken.None);
+                var payload = (await GoogleJsonWebSignature.ValidateAsync(token.IdToken, new GoogleJsonWebSignature.ValidationSettings()));
+                var appUser = await _userManager.FindByNameAsync(payload.Email);
+
+                if (appUser != null)
+                {
+                    appUser.UserName = payload.Email;
+                    appUser.AvatarUrl = payload.Picture;
+                    await _signInManager.SignInAsync(appUser, false);
+                    response = new DataResponse<object>() { Data = GenerateJwtToken(appUser), Success = true };
+                }
+                else
+                {
+                    //new user
+                    var user = new ApplicationUser
+                    {
+                        //hack for now - force users to activate email before logging in?
+                        UserName = payload.Email,
+                        Email = payload.Email,
+                        AvatarUrl = payload.Picture
+                    };
+
+                    var identityResult = await _userManager.CreateAsync(user);
+
+                    if (identityResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, false);
+                        response = new DataResponse<object>() { Data = GenerateJwtToken(user), Success = true };
+                    }
+                    else
+                    {
+                        foreach (IdentityError Error in identityResult.Errors)
+                        {
+                            response.AddError("*", Error.Description);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                response.AddError("*", "Error authenticating with Google");
+            }
             return response;
         }
 
@@ -101,10 +170,10 @@ namespace JForms.Application.Services
 
             var appUser = await _userManager.FindByNameAsync(githubUser.login);
 
-            appUser.AvatarUrl = githubUser.avatar_url;
-
             if (appUser != null)
             {
+                appUser.AvatarUrl = githubUser.avatar_url;
+                appUser.UserName = githubUser.login;
                 //success
                 await _signInManager.SignInAsync(appUser, false);
                 /*await _signInManager.UpdateExternalAuthenticationTokensAsync(new ExternalLoginInfo()
@@ -116,7 +185,7 @@ namespace JForms.Application.Services
                     Principal = new ClaimsPrincipal()
 
                 });*/
-                response = new DataResponse<object>() { Data = GenerateJwtToken(githubUser.login, appUser), Success = true };
+                response = new DataResponse<object>() { Data = GenerateJwtToken(appUser), Success = true };
             }
             else
             {
@@ -134,7 +203,7 @@ namespace JForms.Application.Services
                 if (identityResult.Succeeded)
                 {
                     await _signInManager.SignInAsync(appUser, false);
-                    response = new DataResponse<object>() { Data = GenerateJwtToken(githubUser.login, user), Success = true };
+                    response = new DataResponse<object>() { Data = GenerateJwtToken(user), Success = true };
                 }
                 else
                 {
@@ -169,7 +238,7 @@ namespace JForms.Application.Services
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
-                response = new DataResponse<object>() { Data = GenerateJwtToken(registerDto.Email, user), Success = true };
+                response = new DataResponse<object>() { Data = GenerateJwtToken(user), Success = true };
             }
             else
             {
@@ -189,11 +258,11 @@ namespace JForms.Application.Services
             return response;
         }
 
-        private object GenerateJwtToken(string email, ApplicationUser user)
+        private object GenerateJwtToken(ApplicationUser user)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, email),
+                new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
             if (user.AvatarUrl != null)

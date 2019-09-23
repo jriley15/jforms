@@ -47,7 +47,7 @@ export default function CreateForm() {
   const [formFields, setFormFields] = useState([]);
   const [validationTypes, setValidationTypes] = useState([]);
   const [formName, setFormName] = useState("");
-  const [formType, setFormType] = useState(0);
+  const [formType, setFormType] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [formId, setFormId] = useState(0);
@@ -192,6 +192,7 @@ export default function CreateForm() {
 
   const formNameChange = (e, { value }) => {
     setFormName(value);
+    if (formFields.length === 0) addFormField();
   };
 
   const fieldNameChange = fieldIndex => (e, { value }) => {
@@ -220,7 +221,7 @@ export default function CreateForm() {
   const resetForm = () => {
     setFormName("");
     setFormFields([]);
-    setFormType(0);
+    setFormType(1);
     setSubmitting(false);
     setSuccess(false);
   };
@@ -282,7 +283,7 @@ export default function CreateForm() {
               </Indent>
             </Group>
           </Segment>
-          {formName && (
+          {/*formName && (
             <Segment inverted>
               <Group>
                 <p style={{ fontSize: "1.33em" }}>
@@ -304,12 +305,18 @@ export default function CreateForm() {
                 </Indent>
               </Group>
             </Segment>
-          )}
-          {formType > 0 && (
+                  )*/}
+          {/*formType*/ formName && (
             <Segment inverted>
               <Group>
                 <p style={{ fontSize: "1.33em" }}>
-                  <b>Step 3.</b> Create & Configure your fields
+                  <b>Step 2.</b> Create & Configure your fields
+                </p>
+                <p style={{ fontSize: "1.16em" }}>
+                  Need help creating fields? View the{" "}
+                  <a href="/documentation/3" target="_blank">
+                    documentation here
+                  </a>
                 </p>
                 <Divider inverted />
                 <Message color="yellow" style={{ maxWidth: 464 }}>
@@ -513,6 +520,15 @@ export default function CreateForm() {
                                     {ruleIndex ===
                                       formField.Validation.Rules.length - 1 && (
                                       <div style={{ marginTop: 32 }}>
+                                        <p style={{ fontSize: "1.16em" }}>
+                                          Need help creating rules? View the{" "}
+                                          <a
+                                            href="/documentation/4"
+                                            target="_blank"
+                                          >
+                                            documentation here
+                                          </a>
+                                        </p>
                                         <Button
                                           color="orange"
                                           onClick={() => addRule(fieldIndex)}
@@ -570,7 +586,7 @@ export default function CreateForm() {
             <Segment inverted>
               <Group>
                 <p style={{ fontSize: "1.33em" }}>
-                  <b>Step 4.</b> Done
+                  <b>Step 3.</b> Done
                 </p>
                 <Divider inverted />
 

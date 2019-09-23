@@ -43,7 +43,7 @@ namespace JForms.Application.Services
 
             //HTML form
             StringBuilder HTML = new StringBuilder();
-            HTML.AppendLine("<form action='https://localhost:44333/Submit/" + form.FormId+"' method='post'>");
+            HTML.AppendLine("<form action='https://formsapi.jrdn.tech/Submit/" + form.FormId+"' method='post'>");
             foreach (FormField field in form.Fields)
             {
                 HTML.AppendTab();
@@ -128,7 +128,7 @@ namespace JForms.Application.Services
             Ajax.AppendTab();
             Ajax.AppendLine("}");
             Ajax.AppendLine("};");
-            Ajax.AppendLine("xhr.open('POST', 'https://localhost:44333/Submit/" + form.FormId + "', true);");
+            Ajax.AppendLine("xhr.open('POST', 'https://formsapi.jrdn.tech/Submit/" + form.FormId + "', true);");
             Ajax.AppendLine("xhr.setRequestHeader('Content-Type', 'application/json');");
             Ajax.AppendLine("xhr.send(JSON.stringify({");
 
@@ -146,7 +146,7 @@ namespace JForms.Application.Services
             //Fetch
             StringBuilder Fetch = new StringBuilder();
 
-            Fetch.AppendLine("fetch('https://localhost:44333/Submit/"+form.FormId+"', {");
+            Fetch.AppendLine("fetch('https://formsapi.jrdn.tech/Submit/"+form.FormId+"', {");
             Fetch.AppendTab();
             Fetch.AppendLine("method: 'POST',");
             Fetch.AppendTab();

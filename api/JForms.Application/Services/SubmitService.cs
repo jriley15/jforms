@@ -137,7 +137,6 @@ namespace JForms.Application.Services
 
                                 case (int)FieldType.RadioButton:
                                 case (int)FieldType.DropDown:
-
                                     if (submission.ContainsKey(field.Name))
                                     {
                                         //make sure submitted value is one of the possible options provided
@@ -146,9 +145,7 @@ namespace JForms.Application.Services
                                         {
                                             response.AddError(field.Name, "Invalid value selected");
                                         }
-
                                     }
-
                                     break;
                             }
                         }
@@ -170,17 +167,13 @@ namespace JForms.Application.Services
                         {
                             response.AddError(field.Name, "Required");
                         }
-
                     }
-
                 }
                 //custom javascript validation
                 else if (field.Validation.Type == ValidationType.CustomScript)
                 {
 
                 }
-
-
             });
 
             if (response.Errors.Count == 0)
