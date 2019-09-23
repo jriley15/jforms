@@ -93,7 +93,7 @@ namespace JForms
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -101,7 +101,7 @@ namespace JForms
             {
                 policy.AllowAnyHeader();
                 policy.AllowAnyMethod();
-                policy.SetIsOriginAllowed((host) => true);
+                policy.WithOrigins("https://forms.jrdn.tech", "http://localhost:3000");//(host) => true);
                 policy.AllowCredentials();
             });
 
