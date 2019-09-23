@@ -11,9 +11,6 @@ export default function Introduction() {
       <Header as="h3" inverted>
         What is JForms?
       </Header>
-      <a href="https://github.com/jriley15/jforms" target="_blank">
-        Check out the source code here
-      </a>
       <p style={{ fontSize: "1.2em", lineHeight: "1.5" }}>
         JForms is a platform that allows you to design your own forms with
         custom fields and validation without having to worry about the back-end.
@@ -29,7 +26,10 @@ export default function Introduction() {
         How can I get started?
       </Header>
       <p style={{ fontSize: "1.2em" }}>
-        Click on 'Get started' in the menu on the left.
+        Click on 'Get started' in the menu on the left.{" "}
+        <a href="https://github.com/jriley15/jforms" target="_blank">
+          Check out the source code here
+        </a>
       </p>
     </div>
   );
