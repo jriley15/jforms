@@ -101,7 +101,7 @@ namespace JForms
             {
                 policy.AllowAnyHeader();
                 policy.AllowAnyMethod();
-                policy.WithOrigins("https://forms.jrdn.tech", "http://localhost:3000");//(host) => true);
+                policy.SetIsOriginAllowed((host) => true);
                 policy.AllowCredentials();
             });
 
@@ -110,7 +110,13 @@ namespace JForms
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireCors(policy =>
+                {
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.SetIsOriginAllowed((host) => true);
+                    policy.AllowCredentials();
+                });
             });
         }
     }
