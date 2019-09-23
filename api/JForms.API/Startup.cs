@@ -40,8 +40,9 @@ namespace JForms
             services.AddControllers(options =>
             {
                 options.Filters.Add(typeof(ValidateModelStateAttribute));
-            }).AddNewtonsoftJson(options => { 
-                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; 
+            }).AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
 
             services.AddAutoMapper(typeof(MappingProfile));
@@ -75,6 +76,18 @@ namespace JForms
 
             services.AddHttpClient();
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    policy =>
+                    {
+                        policy.AllowAnyHeader();
+                        policy.AllowAnyMethod();
+                        policy.SetIsOriginAllowed((host) => true);
+                        policy.AllowCredentials();
+                    });
+            });
+
             services.AddTransient<ISubmitService, SubmitService>();
             services.AddTransient<IFormService, FormService>();
             services.AddTransient<IFormFieldService, FormFieldService>();
@@ -95,26 +108,14 @@ namespace JForms
 
             app.UseRouting();
 
-            app.UseCors(policy =>
-            {
-                policy.AllowAnyHeader();
-                policy.AllowAnyMethod();
-                policy.SetIsOriginAllowed((host) => true);
-                policy.AllowCredentials();
-            });
+            app.UseCors("default");
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers().RequireCors(policy =>
-                {
-                    policy.AllowAnyHeader();
-                    policy.AllowAnyMethod();
-                    policy.SetIsOriginAllowed((host) => true);
-                    policy.AllowCredentials();
-                });
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }
