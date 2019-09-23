@@ -95,6 +95,8 @@ namespace JForms
 
             app.UseHttpsRedirection();
 
+            app.UseRouting();
+
             app.UseCors(policy =>
             {
                 policy.AllowAnyHeader();
@@ -102,8 +104,6 @@ namespace JForms
                 policy.SetIsOriginAllowed((host) => true);
                 policy.AllowCredentials();
             });
-
-            app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
