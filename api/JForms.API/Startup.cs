@@ -97,13 +97,6 @@ namespace JForms
 
             app.UseRouting();
 
-            app.UseCors(policy =>
-            {
-                policy.AllowAnyHeader();
-                policy.AllowAnyMethod();
-                policy.SetIsOriginAllowed((host) => true);
-                policy.AllowCredentials();
-            });
 
             app.UseAuthentication();
             app.UseAuthorization();
