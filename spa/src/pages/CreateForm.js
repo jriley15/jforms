@@ -11,7 +11,8 @@ import {
   Modal,
   Dimmer,
   Breadcrumb,
-  Divider
+  Divider,
+  List
 } from "semantic-ui-react";
 import styled from "styled-components";
 import { apiUrl } from "../config";
@@ -52,6 +53,7 @@ export default function CreateForm() {
   const [success, setSuccess] = useState(false);
   const [formId, setFormId] = useState(0);
   const { get, post } = useRequest();
+  const [errors, setErrors] = useState([]);
 
   const submitForm = async () => {
     const form = {
@@ -71,6 +73,7 @@ export default function CreateForm() {
     } else {
       setSubmitting(false);
       setSuccess(false);
+      setErrors(response.errors);
     }
   };
 
@@ -267,6 +270,15 @@ export default function CreateForm() {
         >
           <Segment inverted>
             <Group>
+              {errors["*"] && (
+                <List>
+                  {errors["*"].map((error, index) => (
+                    <List.Item key={index} style={{ color: "red" }}>
+                      {error}
+                    </List.Item>
+                  ))}
+                </List>
+              )}
               <p style={{ fontSize: "1.33em" }}>
                 <b>Step 1.</b> Name your form
               </p>

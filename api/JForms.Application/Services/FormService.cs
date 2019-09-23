@@ -77,7 +77,7 @@ namespace JForms.Application.Services
             {
                 if (String.IsNullOrWhiteSpace(field.Name))
                 {
-                    response.AddError("*", "Field " + field.Name + " must have a name.");
+                    response.AddError("*", "Fields must have a name.");
                 }
                 if (!Enum.IsDefined(typeof(FieldType), field.FormFieldTypeId))
                 {
