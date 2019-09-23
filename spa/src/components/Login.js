@@ -166,7 +166,7 @@ export default function Login({ open, close }) {
                 onSuccess={responseGoogle}
                 onFailure={responseGoogle}
                 cookiePolicy={"single_host_origin"}
-                redirectUri="http://localhost:3000"
+                redirectUri="https://forms.jrdn.tech"
                 responseType="code"
               />
               <Divider inverted horizontal>
@@ -174,7 +174,7 @@ export default function Login({ open, close }) {
               </Divider>
               <GitHubLogin
                 clientId="9b290dccc70c0fe5f259"
-                redirectUri="http://localhost:3000"
+                redirectUri="https://forms.jrdn.tech"
                 onSuccess={onGithubSuccess}
                 onFailure={onGithubFailure}
               />

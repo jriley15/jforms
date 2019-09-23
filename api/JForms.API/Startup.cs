@@ -106,9 +106,9 @@ namespace JForms
 
             app.UseHttpsRedirection();
 
-            app.UseCors();
-
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
