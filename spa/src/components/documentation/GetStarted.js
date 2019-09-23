@@ -13,10 +13,10 @@ export default function GetStarted() {
       <Divider />
       <p style={{ fontSize: "1.2em", lineHeight: "1.5" }}>
         To get started with JForms, you must create and sign into an account. At
-        the moment, we only support signing in with GitHub OAuth. If you have a
-        GitHub account, the sign in process takes a few seconds and then you're
-        ready to start making forms. Once you sign in you'll see the form
-        dashboard button appear in the navigation bar.
+        the moment, we only support signing in with GitHub and Google OAuth. If
+        you have a GitHub/Google account, the sign in process takes a few
+        seconds and then you're ready to start making forms. Once you sign in
+        you'll see the form dashboard button appear in the navigation bar.
       </p>
       <Button color="teal" onClick={() => setLoginOpen(true)}>
         Sign in
