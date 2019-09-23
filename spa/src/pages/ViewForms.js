@@ -80,7 +80,7 @@ export default function ViewForms() {
               </Table.Cell>
               <Table.Cell>
                 <Button as={Link} to={"/form/dashboard/" + form.formId} compact>
-                  View
+                  Dashboard
                 </Button>
               </Table.Cell>
             </Table.Row>
