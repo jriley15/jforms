@@ -12,15 +12,11 @@ namespace JForms.Data.Dto.Form
 
         public int FormId { get; set; }
 
-        [Required]
         public string Name { get; set; }
 
         public FormType Type { get; set; }
 
         public ICollection<FormFieldDto> Fields { get; set; }
-
-
-
 
     }
 }
