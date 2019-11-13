@@ -9,7 +9,6 @@ namespace JForms.API.Extensions
 {
     public static class ControllerExtensions
     {
-
         public static IActionResult GenerateResponse(this ControllerBase controllerBase, Response response)
         {
             if (response.Success)
@@ -19,8 +18,5 @@ namespace JForms.API.Extensions
 
             return controllerBase.BadRequest(response);
         }
-    
-
-    
     }
 }
